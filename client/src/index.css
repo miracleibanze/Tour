@@ -1,70 +1,86 @@
 @import "tailwindcss";
 
 :root {
-  /* Brand Colors */
-  --primary: #004741;
-  --primary-light: #00665d;
-  --primary-dark: #00312d;
+  /* --- Brand & Layout Colors --- */
+  /* Main background gradient stops simulating the image background */
+  --canva: #fffde6;
+  --canva-medium: #d7e4a1;
 
-  --secondary: #f0ede4;
-  --secondary-light: #f8f6f0;
-  --secondary-dark: #e3ddd0;
+  /* Component Surfaces (The soft glassmorphism cards) */
+  --surface: rgba(255, 255, 255, 0.65);
+  --surface-blur: 10px;
 
-  /* Accent Colors */
-  --accent: #d9a441;
-  --accent-light: #e6bc69;
-  --accent-dark: #b7862f;
+  /* --- Text Hierarchy (From Infographic) --- */
+  --primary: #1e2b14; /* Best contrast / Main text / Heading 1 */
+  --headings: #2d4a22; /* Heading 2 */
+  --warm: #3b2f1a; /* Warm Text / Heading 3 */
+  --strong: #222831; /* Strong Text */
+  --professional: #0d1b2a; /* Professional text variant */
 
-  /* Backgrounds */
-  --background: #f0ede4;
-  --background-secondary: #faf8f3;
-  --surface: #ffffff;
+  --paragraph: #4a5568; /* Paragraph text for better readability */
+  --secondary: #6b7280; /* Secondary text / Captions / Subtitles */
+  --inverse: #ffffff; /* Text inside dark buttons (e.g., "Sign In") */
 
-  /* Text */
-  --text-primary: #004741;
-  --text-secondary: #4b5d5a;
-  --text-muted: #7a8785;
-  --text-inverse: #ffffff;
+  /* --- Accents & UI Elements --- */
+  --accent: #4a7c3a; /* Accent elements */
+  --highlight: #a56c00; /* Highlight text */
+  --cta: #f2b705; /* Call to Action (Buttons) */
+  --links-icons: #135947; /* Links / Icons */
 }
 
 @theme {
-  --color-primary: var(--primary);
-  --color-primary-light: var(--primary-light);
-  --color-primary-dark: var(--primary-dark);
-
-  --color-secondary: var(--secondary);
-  --color-secondary-light: var(--secondary-light);
-  --color-secondary-dark: var(--secondary-dark);
-
-  --color-accent: var(--accent);
-  --color-accent-light: var(--accent-light);
-  --color-accent-dark: var(--accent-dark);
-
-  --color-background: var(--background);
-  --color-background-secondary: var(--background-secondary);
+  /* Background / Surface Utilities */
+  --color-canva: var(--canva);
+  --color-canva-medium: var(--canva-medium);
   --color-surface: var(--surface);
 
-  --color-text-primary: var(--text-primary);
-  --color-text-secondary: var(--text-secondary);
-  --color-text-muted: var(--text-muted);
-  --color-text-inverse: var(--text-inverse);
+  /* Text Color Utilities (Usage: text-primary, text-headings, etc.) */
+  --color-primary: var(--primary);
+  --color-headings: var(--headings);
+  --color-warm: var(--warm);
+  --color-strong: var(--strong);
+  --color-professional: var(--professional);
+  --color-paragraph: var(--paragraph);
+  --color-secondary: var(--secondary);
+  --color-inverse: var(--inverse);
+
+  /* Component Accent Utilities (Usage: bg-cta, text-accent, etc.) */
+  --color-accent: var(--accent);
+  --color-highlight: var(--highlight);
+  --color-cta: var(--cta);
+  --color-links: var(--links-icons);
+}
+/* --- Utility Classes & Fixes --- */
+
+/* Fixed typo from 'cutom' to 'custom' and added relative positioning context */
+
+body {
+  background-image: url("./assets/Bg.png");
 }
 
-.cutom_underline::before {
+.custom_underline {
+  position: relative;
+}
+
+.custom_underline::before {
   position: absolute;
   content: "";
-  bottom: -2px;
+  bottom: 5px;
   right: 0;
   left: 0;
-  height: 4px;
+  height: 3px;
   width: 80%;
   border-radius: 20px;
-  background: var(--secondary);
+  background: var(--cta); /* Changed to CTA yellow for better visibility */
   margin: 0 auto;
 }
 
+/* Hero Banner Style matching the UI layout */
 .banner {
-  background-image: url("./assets/Kigali\ -\ Rwanda\ 🇷🇼.jpg");
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)),
+    url("./assets/Kigali - Rwanda 🇷🇼.jpg");
   background-repeat: no-repeat;
   background-size: cover;
+  background-position: center;
 }

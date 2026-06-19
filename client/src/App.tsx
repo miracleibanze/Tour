@@ -12,7 +12,7 @@ const App = () => {
   return (
     <>
       <Navbar />
-      <div className="flex-1 h-full">
+      <div className="flex-1 h-full [&>*]:pt-20">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/hotels" element={<Hotels />} />
