@@ -1,0 +1,103 @@
+@import "tailwindcss";
+
+:root {
+  /* --- Brand & Layout Colors --- */
+  /* Main background gradient stops simulating the image background */
+  --canva: #fffde6;
+  --canva-medium: #d7e4a1;
+
+  /* Component Surfaces (The soft glassmorphism cards) */
+  --surface: rgba(255, 255, 255, 0.664);
+  --surface-blur: 10px;
+
+  /* --- Text Hierarchy (From Infographic) --- */
+  --primary: #0d1f13; /* Best contrast / Main text / Heading 1 */
+  --headings: #2d4a22; /* Heading 2 */
+  --warm: #3b2f1a; /* Warm Text / Heading 3 */
+  --strong: #222831; /* Strong Text */
+  --professional: #0d1b2a; /* Professional text variant */
+
+  --paragraph: #4a5568; /* Paragraph text for better readability */
+  --secondary: #6b7280; /* Secondary text / Captions / Subtitles */
+  --inverse: #ffffff; /* Text inside dark buttons (e.g., "Sign In") */
+
+  /* --- Accents & UI Elements --- */
+  --accent: #20603d; /* Accent elements */
+  --highlight: #a56c00; /* Highlight text */
+  --cta: #f2b705; /* Call to Action (Buttons) */
+  --links-icons: #135947; /* Links / Icons */
+}
+
+@theme {
+  /* Background / Surface Utilities */
+  --color-canva: var(--canva);
+  --color-canva-medium: var(--canva-medium);
+  --color-surface: var(--surface);
+
+  /* Text Color Utilities (Usage: text-primary, text-headings, etc.) */
+  --color-primary: var(--primary);
+  --color-headings: var(--headings);
+  --color-warm: var(--warm);
+  --color-strong: var(--strong);
+  --color-professional: var(--professional);
+  --color-paragraph: var(--paragraph);
+  --color-secondary: var(--secondary);
+  --color-inverse: var(--inverse);
+
+  /* Component Accent Utilities (Usage: bg-cta, text-accent, etc.) */
+  --color-accent: var(--accent);
+  --color-highlight: var(--highlight);
+  --color-cta: var(--cta);
+  --color-links: var(--links-icons);
+}
+/* --- Utility Classes & Fixes --- */
+
+/* Fixed typo from 'cutom' to 'custom' and added relative positioning context */
+
+.custom_underline {
+  position: relative;
+}
+
+.custom_underline::before {
+  position: absolute;
+  content: "";
+  bottom: 5px;
+  right: 0;
+  left: 0;
+  height: 3px;
+  width: 80%;
+  border-radius: 20px;
+  background: var(--cta); /* Changed to CTA yellow for better visibility */
+  margin: 0 auto;
+}
+
+/* Hero Banner Style matching the UI layout */
+/* .banner {
+  background-image:
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)),
+    url("../public/Kigali\ -\ Rwanda\ 🇷🇼.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+} */
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.shimmer {
+  /* background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05),
+    rgba(255, 255, 255, 0.15),
+    rgba(255, 255, 255, 0.05)
+  );*/
+  background-size: 200% 100%;
+  /* background-color: red; */
+  animation: shimmer 1.5s infinite linear;
+}
