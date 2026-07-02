@@ -56,7 +56,7 @@ export function PlaceCard({ place }: { place: Place }) {
   const [saved, setSaved] = useState(false);
   return (
     <div className="bg-surface/20 rounded-2xl overflow-hidden shadow-sm border border-secondary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer">
-      <div className="relative overflow-hidden h-48 bg-muted">
+      <div className="relative overflow-hidden h-48 bg-secondary/20">
         <img
           src={place.image}
           alt={place.name}
@@ -109,7 +109,7 @@ export function PlaceCard({ place }: { place: Place }) {
           </div>
           <span className="text-sm font-bold text-primary">{place.price}</span>
         </div>
-        {place.tags.length > 0 && (
+        {place.tags && place.tags.length > 0 && (
           <div className="flex gap-1 mt-3 flex-wrap">
             {place.tags.slice(0, 2).map((tag) => (
               <Tag key={tag} label={tag} color="gray" />

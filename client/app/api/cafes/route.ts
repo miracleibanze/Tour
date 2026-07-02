@@ -1,71 +1,80 @@
 import { NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { cafes } from "@/lib/schema";
-import { eq } from "drizzle-orm";
+import { desc, eq, ilike, and, count } from "drizzle-orm";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function GET(request: Request) {
   try {
-    const [data] = await db
-      .select()
-      .from(cafes)
-      .where(eq(cafes.id, params.id));
+    const { searchParams } = new URL(request.url);
 
-    if (!data) {
-      return NextResponse.json(
-        { error: "Cafe not found" },
-        { status: 404 }
-      );
+    const rawPage = Number(searchParams.get("page"));
+    const page = !rawPage || rawPage < 1 ? 1 : rawPage;
+
+    const limit = Number(searchParams.get("limit") || 12);
+    const offset = (page - 1) * limit;
+
+    const category = searchParams.get("category") || "";
+    const featured = searchParams.get("featured") || "";
+    const search = searchParams.get("q") || "";
+
+    const conditions = [];
+
+    if (category.trim()) {
+      conditions.push(eq(cafes.category, category));
     }
 
-    return NextResponse.json(data);
-  } catch {
+    if (featured === "true") {
+      conditions.push(eq(cafes.featured, true));
+    }
+
+    if (search.trim()) {
+      conditions.push(ilike(cafes.name, `%${search}%`));
+    }
+
+    const data = await db
+      .select()
+      .from(cafes)
+      .where(conditions.length ? and(...conditions) : undefined)
+      .orderBy(desc(cafes.rating))
+      .limit(limit)
+      .offset(offset);
+
+    const [{ total }] = await db
+      .select({ total: count() })
+      .from(cafes)
+      .where(conditions.length ? and(...conditions) : undefined);
+
+    return NextResponse.json({
+      data,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+        hasNext: page * limit < total,
+        hasPrevious: page > 1,
+      },
+    });
+  } catch (err) {
+    console.error(err);
     return NextResponse.json(
-      { error: "Failed to fetch cafe" },
-      { status: 500 }
+      { error: "Failed to fetch cafes" },
+      { status: 500 },
     );
   }
 }
 
-export async function PATCH(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
+export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const [updated] = await db
-      .update(cafes)
-      .set(body)
-      .where(eq(cafes.id, params.id))
-      .returning();
+    const [item] = await db.insert(cafes).values(body).returning();
 
-    return NextResponse.json(updated);
+    return NextResponse.json(item, { status: 201 });
   } catch {
     return NextResponse.json(
-      { error: "Failed to update cafe" },
-      { status: 500 }
-    );
-  }
-}
-
-export async function DELETE(
-  _request: Request,
-  { params }: { params: { id: string } }
-) {
-  try {
-    const [deleted] = await db
-      .delete(cafes)
-      .where(eq(cafes.id, params.id))
-      .returning();
-
-    return NextResponse.json(deleted);
-  } catch {
-    return NextResponse.json(
-      { error: "Failed to delete cafe" },
-      { status: 500 }
+      { error: "Failed to create cafe" },
+      { status: 500 },
     );
   }
 }

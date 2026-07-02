@@ -1,5 +1,5 @@
 type Page =
-  | "home"
+  | "/"
   | "explore"
   | "map"
   | "trips"
@@ -28,7 +28,8 @@ interface Place {
   price: string;
   location: string;
   category: string;
-  tags: string[];
+  tags?: string[];
+  date?: Date;
   featured?: boolean;
   description?: string;
   createdAt?: string;

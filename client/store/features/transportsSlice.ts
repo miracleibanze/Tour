@@ -1,40 +1,33 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-type Testimonial = {
-  id: string;
-  name: string;
-  country: string;
-  avatar: string;
-  text: string;
-  rating: number;
-  trip?: string;
-  createdAt?: string;
-};
-
-type TestimonialsState = {
-  data: Testimonial[];
+type TransportState = {
+  data: Place[];
   pagination: Pagination | null;
   loading: boolean;
   error: string | null;
 };
 
-const initialState: TestimonialsState = {
+const initialState: TransportState = {
   data: [],
   pagination: null,
   loading: false,
   error: null,
 };
 
-export const fetchTestimonials = createAsyncThunk(
-  "testimonials/fetchTestimonials",
+export const fetchTransport = createAsyncThunk(
+  "transport/fetchTransport",
   async (
     {
       page = 1,
       limit = 12,
+      category = "",
+      featured,
       search = "",
     }: {
       page?: number;
       limit?: number;
+      category?: string;
+      featured?: boolean;
       search?: string;
     } = {},
     thunkAPI,
@@ -45,14 +38,14 @@ export const fetchTestimonials = createAsyncThunk(
       query.set("page", String(page));
       query.set("limit", String(limit));
 
-      if (search) {
-        query.set("q", search);
-      }
+      if (category.trim()) query.set("category", category);
+      if (featured !== undefined) query.set("featured", String(featured));
+      if (search.trim()) query.set("q", search);
 
-      const res = await fetch(`/api/testimonials?${query.toString()}`);
+      const res = await fetch(`/api/transport?${query.toString()}`);
 
       if (!res.ok) {
-        return thunkAPI.rejectWithValue("Failed to fetch testimonials");
+        return thunkAPI.rejectWithValue("Failed to fetch transport");
       }
 
       return await res.json();
@@ -62,11 +55,11 @@ export const fetchTestimonials = createAsyncThunk(
   },
 );
 
-const testimonialsSlice = createSlice({
-  name: "testimonials",
+const transportSlice = createSlice({
+  name: "transport",
   initialState,
   reducers: {
-    clearTestimonials: (state) => {
+    clearTransport: (state) => {
       state.data = [];
       state.pagination = null;
       state.loading = false;
@@ -75,23 +68,21 @@ const testimonialsSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
-      .addCase(fetchTestimonials.pending, (state) => {
+      .addCase(fetchTransport.pending, (state) => {
         state.loading = true;
         state.error = null;
       })
-      .addCase(fetchTestimonials.fulfilled, (state, action) => {
+      .addCase(fetchTransport.fulfilled, (state, action) => {
         state.loading = false;
         state.data = action.payload.data;
         state.pagination = action.payload.pagination;
       })
-      .addCase(fetchTestimonials.rejected, (state, action) => {
+      .addCase(fetchTransport.rejected, (state, action) => {
         state.loading = false;
-        state.error =
-          (action.payload as string) || "Failed to fetch testimonials";
+        state.error = (action.payload as string) || "Failed to fetch transport";
       });
   },
 });
 
-export const { clearTestimonials } = testimonialsSlice.actions;
-
-export default testimonialsSlice.reducer;
+export const { clearTransport } = transportSlice.actions;
+export default transportSlice.reducer;

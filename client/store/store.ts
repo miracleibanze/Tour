@@ -5,6 +5,8 @@ import restaurantsReducer from "./features/restaurantsSlice";
 import attractionsReducer from "./features/attractionsSlice";
 import eventsReducer from "./features/eventsSlice";
 import testimonialsReducer from "./features/testimonialsSlice";
+import cafesReducer from "./features/cafesSlice";
+import transportsReducer from "./features/transportsSlice";
 
 export const store = configureStore({
   reducer: {
@@ -14,6 +16,8 @@ export const store = configureStore({
     attractions: attractionsReducer,
     events: eventsReducer,
     testimonials: testimonialsReducer,
+    cafes: cafesReducer,
+    transports: transportsReducer,
   },
 });
 

@@ -1,30 +1,7 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
-type Event = {
-  id: string;
-  name: string;
-  image: string;
-  date: string;
-  location: string;
-  category: string;
-  price: string;
-  rating: number;
-  reviews: number;
-  createdAt?: string;
-  updatedAt?: string;
-};
-
-type Pagination = {
-  page: number;
-  limit: number;
-  total: number;
-  totalPages: number;
-  hasNext?: boolean;
-  hasPrevious?: boolean;
-};
-
 type EventsState = {
-  data: Event[];
+  data: Place[];
   pagination: Pagination | null;
   loading: boolean;
   error: string | null;

@@ -17,7 +17,7 @@
   --strong: #222831; /* Strong Text */
   --professional: #0d1b2a; /* Professional text variant */
 
-  --paragraph: #4a5568; /* Paragraph text for better readability */
+  --foreground: #f8f8f8ec; /* Foreground text for better readability */
   --secondary: #6b7280; /* Secondary text / Captions / Subtitles */
   --inverse: #ffffff; /* Text inside dark buttons (e.g., "Sign In") */
 
@@ -29,7 +29,6 @@
 }
 
 @theme {
-  /* Background / Surface Utilities */
   --color-canva: var(--canva);
   --color-canva-medium: var(--canva-medium);
   --color-surface: var(--surface);
@@ -40,7 +39,7 @@
   --color-warm: var(--warm);
   --color-strong: var(--strong);
   --color-professional: var(--professional);
-  --color-paragraph: var(--paragraph);
+  --color-foreground: var(--foreground);
   --color-secondary: var(--secondary);
   --color-inverse: var(--inverse);
 

@@ -33,6 +33,7 @@ import { fetchRestaurants } from "@/store/features/restaurantsSlice";
 import { fetchAttractions } from "@/store/features/attractionsSlice";
 import { fetchEvents } from "@/store/features/eventsSlice";
 import { fetchTestimonials } from "@/store/features/testimonialsSlice";
+import Footer from "@/components/Footer";
 
 export default function Home() {
   const router = useRouter();
@@ -45,6 +46,7 @@ export default function Home() {
     nationalParks: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [circles, setCircles] = useState<{ top: string; left: string }[]>([]);
 
   const {
     destinations,
@@ -62,11 +64,11 @@ export default function Home() {
         limit: 6,
       }),
     );
-    dispatch(fetchHotels({ page: 0, limit: 6, featured: true }));
-    dispatch(fetchRestaurants({ page: 0, limit: 6, featured: true }));
-    dispatch(fetchAttractions({ page: 0, limit: 6, featured: true }));
-    dispatch(fetchEvents({ page: 0, limit: 4 }));
-    dispatch(fetchTestimonials({ page: 0, limit: 3 }));
+    dispatch(fetchHotels({ page: 1, limit: 6, featured: true }));
+    dispatch(fetchRestaurants({ page: 1, limit: 6, featured: true }));
+    dispatch(fetchAttractions({ page: 1, limit: 6, featured: true }));
+    dispatch(fetchEvents({ page: 1, limit: 4 }));
+    dispatch(fetchTestimonials({ page: 1, limit: 3 }));
   }, [dispatch]);
 
   useEffect(() => {
@@ -144,6 +146,15 @@ export default function Home() {
       tag: "Nature",
     },
   ];
+
+  useEffect(() => {
+    setCircles(
+      Array.from({ length: 20 }, () => ({
+        top: `${Math.random() * 100}%`,
+        left: `${Math.random() * 100}%`,
+      })),
+    );
+  }, []);
 
   return (
     <>
@@ -326,7 +337,7 @@ export default function Home() {
               />
               <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
               <div className="absolute top-4 left-4">
-                <span className="bg-accent text-accent-foreground text-xs font-bold px-3 py-1 rounded-full font-mono">
+                <span className="bg-accent text-canva text-xs font-bold px-3 py-1 rounded-full font-mono">
                   {item.tag}
                 </span>
               </div>
@@ -381,7 +392,7 @@ export default function Home() {
                 className="bg-surface rounded-2xl overflow-hidden border border-secondary/30 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer group"
                 onClick={() => router.push("/events")}
               >
-                <div className="relative h-44 bg-muted overflow-hidden">
+                <div className="relative h-44 bg-secondary/30 overflow-hidden">
                   <img
                     src={event.image}
                     alt={event.name}
@@ -389,27 +400,30 @@ export default function Home() {
                   />
                   <div className="absolute inset-0 bg-linear-to-t from-black/50 to-transparent" />
                   <div className="absolute top-3 left-3">
-                    <span className="bg-accent text-accent-foreground text-xs font-bold font-mono px-2 py-1 rounded-full">
+                    <span className="bg-accent text-canva text-xs font-bold font-mono px-2 py-1 rounded-full">
                       {event.category}
                     </span>
                   </div>
-                  <div className="absolute bottom-3 left-3 text-white text-xs font-medium flex items-center gap-1">
-                    <Calendar className="w-3 h-3" /> {event.date}
-                  </div>
+                  {event.date && (
+                    <div className="absolute bottom-3 left-3 text-white text-xs font-medium flex items-center gap-1">
+                      <Calendar className="w-3 h-3" />{" "}
+                      {event.date.toLocaleString()}
+                    </div>
+                  )}
                 </div>
 
                 <div className="p-4">
-                  <h3 className="font-bold text-foreground text-sm leading-snug mb-2 line-clamp-2">
+                  <h3 className="font-bold text-primary text-sm leading-snug mb-2 line-clamp-2">
                     {event.name}
                   </h3>
-                  <div className="flex items-center gap-1 text-muted-foreground mb-3">
+                  <div className="flex items-center gap-1 text-secondary mb-3">
                     <MapPin className="w-3 h-3 text-primary" />
                     <span className="text-xs">{event.location}</span>
                   </div>
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1">
                       <StarRating rating={event.rating} />
-                      <span className="text-xs text-muted-foreground">
+                      <span className="text-xs text-secondary">
                         ({event.reviews.toLocaleString()})
                       </span>
                     </div>
@@ -432,13 +446,13 @@ export default function Home() {
 
       <section className="py-16 bg-accent text-white relative overflow-hidden">
         <div className="absolute inset-0 opacity-20">
-          {[...Array(20)].map((_, i) => (
+          {circles.map((circle, i) => (
             <div
               key={i}
               className="absolute w-48 h-48 border-10 border-white rounded-full"
               style={{
-                top: `${Math.random() * 100}%`,
-                left: `${Math.random() * 100}%`,
+                top: circle.top,
+                left: circle.left,
                 opacity: 0.1,
               }}
             />
@@ -482,7 +496,7 @@ export default function Home() {
             alt="Rwanda aerial"
             className="w-full h-full object-cover opacity-30"
           />
-          <div className="absolute inset-0 bg-linear-to-r from-foreground via-foreground/80 to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-r from-primary via-primary/80 to-transparent" />
         </div>
         <div className="max-w-7xl mx-auto px-4 relative z-10">
           <div className="max-w-xl">
@@ -518,16 +532,16 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="py-16 bg-muted/40">
+      <section className="py-16 bg-foreground">
         <div className="max-w-7xl mx-auto px-4">
           <div className="text-center mb-12">
             <h2
-              className="text-3xl font-bold text-foreground mb-3"
+              className="text-3xl font-bold text-primary mb-3"
               style={{ fontFamily: "'Playfair Display', serif" }}
             >
               Loved by Travelers Worldwide
             </h2>
-            <p className="text-muted-foreground">
+            <p className="text-secondary">
               Hear from those who discovered Rwanda through our platform
             </p>
           </div>
@@ -557,11 +571,11 @@ export default function Home() {
                         ))}
                   </div>
                   {!testimonials.loading && testimonials.data[idx] ? (
-                    <p className="text-foreground text-sm leading-relaxed mb-5 italic">
+                    <p className="text-primary text-sm leading-relaxed mb-5 italic">
                       &ldquo;{testimonials.data[idx].text}&rdquo;
                     </p>
                   ) : (
-                    <div className="text-foreground text-sm leading-relaxed mb-5 italic">
+                    <div className="text-primary text-sm leading-relaxed mb-5 italic">
                       {Array.from({ length: 3 }).map((_, i) => (
                         <p
                           key={i}
@@ -571,17 +585,17 @@ export default function Home() {
                     </div>
                   )}
                   {!testimonials.loading && testimonials.data[idx] && (
-                    <div className="flex items-center gap-3 pt-4 border-t border-border">
+                    <div className="flex items-center gap-3 pt-4 border-t border-secondary/20">
                       <img
                         src={testimonials.data[idx].avatar}
                         alt={testimonials.data[idx].name}
                         className="w-10 h-10 rounded-full object-cover"
                       />
                       <div>
-                        <div className="font-semibold text-foreground text-sm">
+                        <div className="font-semibold text-primary text-sm">
                           {testimonials.data[idx].name}
                         </div>
-                        <div className="text-xs text-muted-foreground">
+                        <div className="text-xs text-secondary">
                           {testimonials.data[idx].country} ·{" "}
                           {testimonials.data[idx].trip}
                         </div>
@@ -636,6 +650,8 @@ export default function Home() {
           </div>
         </div>
       </section>
+
+      <Footer />
     </>
   );
 }

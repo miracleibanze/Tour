@@ -43,8 +43,7 @@ const MainRoot = ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <Navbar />
-      <div className="flex-1 h-full [&>*]:pt-20">{children}</div>
-      <Footer />
+      <div className="flex-1 h-full [&>*]:pt-14">{children}</div>
     </>
   );
 };

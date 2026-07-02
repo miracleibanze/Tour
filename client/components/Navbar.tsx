@@ -117,7 +117,7 @@ const Navbar = () => {
     active: boolean;
     home?: boolean;
   }[] = [
-    { label: "Home", page: "home", active: pathname === "/", home: true },
+    { label: "Home", page: "/", active: pathname === "/", home: true },
     {
       label: "Explore",
       page: "explore",
@@ -176,7 +176,7 @@ const Navbar = () => {
             {menuCategories.map(({ label, page, active, home }) => (
               <button
                 key={page}
-                onClick={() => router.push(home ? "/" : "page")}
+                onClick={() => router.push(page)}
                 className={`px-3 py-2 rounded-lg text-sm ${scrolled || pathname !== "/" ? "text-primary" : "text-canva"} font-medium transition-colors ${active ? "custom_underline" : ""} hover:bg-secondary/20 cursor-pointer`}
               >
                 {label}
@@ -227,7 +227,7 @@ const MobileNavbar = () => {
   ];
 
   return (
-    <nav className="fixed md:hidden bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-black/10 shadow-lg">
+    <nav className="fixed lg:hidden bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-black/10 shadow-lg">
       <div className="flex items-center justify-between px-2 py-2">
         {items.map((item) => {
           const Icon = item.icon;

@@ -18,7 +18,7 @@ export const HorizontalScroll: FC<{
       });
   };
   return (
-    <section className="py-12 bg-secondary/10">
+    <section className="py-12 bg-foreground">
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex items-end justify-between mb-6 flex-wrap">
           <div className="flex-1">
@@ -33,15 +33,15 @@ export const HorizontalScroll: FC<{
           <div className="flex items-center justify-end flex-1 gap-2">
             <button
               onClick={() => scroll("left")}
-              className="w-9 h-9 rounded-full border border-secondary/30 bg-surface flex items-center justify-center hover:bg-muted transition-colors"
+              className="w-9 h-9 rounded-full border border-secondary/30 bg-surface flex items-center justify-center hover:bg-secondary/40 transition-colors"
             >
-              <ChevronLeft className="w-4 h-4 text-foreground" />
+              <ChevronLeft className="w-4 h-4 text-primary" />
             </button>
             <button
               onClick={() => scroll("right")}
-              className="w-9 h-9 rounded-full border border-secondary/30 bg-surface flex items-center justify-center hover:bg-muted transition-colors"
+              className="w-9 h-9 rounded-full border border-secondary/30 bg-surface flex items-center justify-center hover:bg-secondary/40 transition-colors"
             >
-              <ChevronRight className="w-4 h-4 text-foreground" />
+              <ChevronRight className="w-4 h-4 text-primary" />
             </button>
             <button
               onClick={onSeeAll}
