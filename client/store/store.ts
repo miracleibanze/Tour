@@ -7,6 +7,8 @@ import eventsReducer from "./features/eventsSlice";
 import testimonialsReducer from "./features/testimonialsSlice";
 import cafesReducer from "./features/cafesSlice";
 import transportsReducer from "./features/transportsSlice";
+import allReducer from "./features/allSlice";
+import searchReducer from "./features/searchSlice";
 
 export const store = configureStore({
   reducer: {
@@ -18,6 +20,8 @@ export const store = configureStore({
     testimonials: testimonialsReducer,
     cafes: cafesReducer,
     transports: transportsReducer,
+    all: allReducer,
+    search: searchReducer,
   },
 });
 

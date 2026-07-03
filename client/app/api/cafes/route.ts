@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const rawPage = Number(searchParams.get("page"));
     const page = !rawPage || rawPage < 1 ? 1 : rawPage;
 
-    const limit = Number(searchParams.get("limit") || 12);
+    const limit = Number(searchParams.get("limit") || 24);
     const offset = (page - 1) * limit;
 
     const category = searchParams.get("category") || "";

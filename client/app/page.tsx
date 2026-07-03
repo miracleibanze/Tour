@@ -17,6 +17,7 @@ import {
   Compass,
   Star,
   Zap,
+  Mountain,
 } from "lucide-react";
 import Kigali from "@/public/Kigali - Rwanda 🇷🇼.jpg";
 import Banner from "../components/UI/Banner";
@@ -188,7 +189,10 @@ export default function Home() {
         </p>
 
         <div className="flex items-center gap-4">
-          <button className="bg-links hover:bg-accent text-white font-bold px-6 py-3.5 rounded-xl text-sm shadow-md transition-all">
+          <button
+            onClick={() => router.push("/explore")}
+            className="bg-links hover:bg-accent text-white font-bold px-6 py-3.5 rounded-xl text-sm shadow-md transition-all"
+          >
             Explore Now
           </button>
           <button className="flex items-center gap-2 bg-white/20 hover:bg-white/60 backdrop-blur-sm text-canva font-bold px-5 py-3 rounded-full text-sm border border-primary/30 transition-all">
@@ -199,7 +203,7 @@ export default function Home() {
           </button>
         </div>
         <div className="lg:col-span-5 w-full flex flex-col mx-auto items-center justify-center">
-          <div className="w-full max-w-2xl bg-white/20 backdrop-blur-md border border-white/30 rounded-3xl p-4 shadow-xl flex flex-col gap-3">
+          <div className="w-full max-w-2xl bg-white/20 backdrop-blur-sm border border-white/30 rounded-3xl p-4 shadow-xl flex flex-col gap-3">
             <div className="w-full relative flex items-center bg-white rounded-full pl-6 pr-1.5 py-1.5 shadow-inner gap-2">
               <input
                 type="text"
@@ -229,22 +233,22 @@ export default function Home() {
             </div>
 
             <div className="flex flex-wrap justify-center gap-2 w-full">
-              <button className="flex items-center  justify-center gap-2 bg-white hover:bg-gray-50 text-[#1E2B14] text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0">
-                <BedDouble className="w-4 h-4 text-gray-700" />
-                Hotels
-              </button>
-              <button className="flex items-center  justify-center gap-2 bg-white hover:bg-gray-50 text-[#1E2B14] text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0">
-                <UtensilsCrossed className="w-4 h-4 text-gray-700" />
-                Restaurants
-              </button>
-              <button className="flex items-center  justify-center gap-2 bg-white hover:bg-gray-50 text-[#1E2B14] text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0">
-                <Coffee className="w-4 h-4 text-gray-700" />
-                Cafés
-              </button>
-              <button className="flex items-center  justify-center gap-2 bg-white hover:bg-gray-50 text-[#1E2B14] text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0">
-                <CalendarDays className="w-4 h-4 text-gray-700" />
-                Events
-              </button>
+              {[
+                { name: "attractions", icon: Mountain },
+                { name: "hotels", icon: BedDouble },
+                { name: "restaurants", icon: UtensilsCrossed },
+                { name: "cafés", icon: Coffee },
+                { name: "events", icon: CalendarDays },
+              ].map((item) => (
+                <button
+                  key={item.name}
+                  onClick={() => router.push(`/explore?tab=${item.name}`)}
+                  className="flex items-center  justify-center gap-2 bg-white hover:bg-gray-50 text-[#1E2B14] text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0 capitalize"
+                >
+                  <item.icon className="w-4 h-4 text-gray-700" />
+                  {item.name}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -315,7 +319,7 @@ export default function Home() {
         subtitle="Handpicked stays from budget to ultra-luxury"
         loading={hotels.loading}
         items={hotels.data}
-        onSeeAll={() => router.push("/explore")}
+        onSeeAll={() => router.push("/explore?tab=hotels")}
       />
 
       <section className="py-16 max-w-7xl mx-auto px-4">
@@ -359,7 +363,7 @@ export default function Home() {
         title="Top Restaurants"
         subtitle="From street food to fine dining across Rwanda"
         items={restaurants.data}
-        onSeeAll={() => router.push("/explore")}
+        onSeeAll={() => router.push("/explore?tab=restaurants")}
         loading={restaurants.loading}
       />
 
@@ -367,7 +371,7 @@ export default function Home() {
         title="Best Attractions"
         subtitle="National parks, lakes, mountains and cultural gems"
         items={attractions.data}
-        onSeeAll={() => router.push("/explore")}
+        onSeeAll={() => router.push("/explore?tab=attractions")}
         loading={attractions.loading}
       />
 

@@ -8,7 +8,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 12;
+    const limit = Number(searchParams.get("limit")) || 24;
     const offset = (page - 1) * limit;
 
     const search = searchParams.get("q");
@@ -44,7 +44,7 @@ export async function GET(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch transport" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

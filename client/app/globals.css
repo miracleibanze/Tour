@@ -17,7 +17,7 @@
   --strong: #222831; /* Strong Text */
   --professional: #0d1b2a; /* Professional text variant */
 
-  --foreground: #f8f8f8ec; /* Foreground text for better readability */
+  --foreground: #f5f5f5; /* Foreground text for better readability */
   --secondary: #6b7280; /* Secondary text / Captions / Subtitles */
   --inverse: #ffffff; /* Text inside dark buttons (e.g., "Sign In") */
 
@@ -99,4 +99,8 @@
   background-size: 200% 100%;
   /* background-color: red; */
   animation: shimmer 1.5s infinite linear;
+}
+
+button {
+  cursor: pointer;
 }

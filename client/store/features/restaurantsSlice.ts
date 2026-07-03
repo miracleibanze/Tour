@@ -19,7 +19,7 @@ export const fetchRestaurants = createAsyncThunk(
   async (
     {
       page = 1,
-      limit = 12,
+      limit = 24,
       category = "",
       featured,
       search = "",

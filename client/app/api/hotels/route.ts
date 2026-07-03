@@ -10,7 +10,7 @@ export async function GET(request: Request) {
     const { searchParams } = new URL(request.url);
 
     const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 12;
+    const limit = Number(searchParams.get("limit")) || 24;
     const offset = (page - 1) * limit;
 
     const category = searchParams.get("category");
@@ -60,20 +60,16 @@ export async function GET(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Failed to fetch hotels" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
-
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
 
-    const [hotel] = await db
-      .insert(hotels)
-      .values(body)
-      .returning();
+    const [hotel] = await db.insert(hotels).values(body).returning();
 
     return NextResponse.json(hotel, {
       status: 201,
@@ -81,7 +77,7 @@ export async function POST(request: Request) {
   } catch {
     return NextResponse.json(
       { error: "Failed to create hotel" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

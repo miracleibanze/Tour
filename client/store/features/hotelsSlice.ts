@@ -16,7 +16,7 @@ const initialState: HotelsState = {
 
 const DEFAULT_PARAMS = {
   page: 1,
-  limit: 12,
+  limit: 24,
   category: "",
   featured: undefined as boolean | undefined,
   search: "",
@@ -50,7 +50,6 @@ export const fetchHotels = createAsyncThunk(
       if (!res.ok) {
         return thunkAPI.rejectWithValue("Failed to fetch hotels");
       }
-
       return await res.json();
     } catch {
       return thunkAPI.rejectWithValue("Network error");

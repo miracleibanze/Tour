@@ -11,6 +11,7 @@ type Page =
   | "events"
   | "transport";
 type ExploreTab =
+  | "all"
   | "hotels"
   | "restaurants"
   | "cafes"
@@ -43,4 +44,13 @@ type Pagination = {
   totalPages: number;
   hasNext: boolean;
   hasPrevious: boolean;
+};
+
+type GroupedPlaces = {
+  hotels: Place[];
+  restaurants: Place[];
+  cafes: Place[];
+  attractions: Place[];
+  events: Place[];
+  transport: Place[];
 };

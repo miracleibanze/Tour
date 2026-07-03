@@ -30,7 +30,7 @@ export const fetchTestimonials = createAsyncThunk(
   async (
     {
       page = 1,
-      limit = 12,
+      limit = 24,
       search = "",
     }: {
       page?: number;

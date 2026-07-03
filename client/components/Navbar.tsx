@@ -17,93 +17,6 @@ import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
 
-// const menuCategories = [
-//   {
-//     name: "Home",
-//     href: "/",
-//     active: pathname === "/",
-//     links: [
-//       { name: "Dashboard", icon: LayoutDashboard },
-//       { name: "Featured Stays", icon: Star },
-//       { name: "Top Offers", icon: Tags },
-//       { name: "New Openings", icon: Sparkles },
-//       { name: "User Reviews", icon: MessageSquare },
-//       { name: "Help Center", icon: HelpCircle },
-//       { name: "Others", icon: Ellipsis },
-//     ],
-//   },
-//   {
-//     name: "Explore",
-//     href: "/explore",
-//     active: pathname.startsWith("/explore"),
-//     links: [
-//       { name: "Gorilla Trekking", icon: Compass },
-//       { name: "Akagera Safaris", icon: ShieldCheck },
-//       { name: "Nyungwe Canopy", icon: Trees },
-//       { name: "Cultural Sites", icon: Landmark },
-//       { name: "Art Galleries", icon: Palmtree },
-//       { name: "Hiking Trails", icon: Mountain },
-//       { name: "Others", icon: Ellipsis },
-//     ],
-//   },
-//   {
-//     name: "Hotels & Motels",
-//     href: "/hotels",
-//     active: pathname.startsWith("/hotels"),
-//     links: [
-//       { name: "Luxury Resorts", icon: Hotel },
-//       { name: "Boutique Hotels", icon: Building },
-//       { name: "Roadside Motels", icon: Bed },
-//       { name: "Eco-Lodges", icon: Tent },
-//       { name: "Serviced Apartments", icon: HouseIcon },
-//       { name: "Wellness Spas", icon: Activity },
-//       { name: "Others", icon: Ellipsis },
-//     ],
-//   },
-//   {
-//     name: "Restaurants",
-//     href: "/restaurants",
-//     active: pathname.startsWith("/restaurants"),
-//     links: [
-//       { name: "Fine Dining", icon: Utensils },
-//       { name: "Traditional Kitchens", icon: Flame },
-//       { name: "Rooftop Lounges", icon: Sunset },
-//       { name: "Local Bistros", icon: Store },
-//       { name: "Food Markets", icon: Egg },
-//       { name: "Wine Bars", icon: Wine },
-//       { name: "Others", icon: Ellipsis },
-//     ],
-//   },
-//   {
-//     name: "Cafés",
-//     href: "/cafes",
-//     active: pathname.startsWith("/cafes"),
-//     links: [
-//       { name: "Specialty Coffee", icon: Coffee },
-//       { name: "Bakery Cafés", icon: Croissant },
-//       { name: "Work-Friendly", icon: Briefcase },
-//       { name: "Artisan Roasters", icon: Leaf },
-//       { name: "Tea Houses", icon: Blender },
-//       { name: "Dessert Spots", icon: Cake },
-//       { name: "Others", icon: Ellipsis },
-//     ],
-//   },
-//   {
-//     name: "Events",
-//     href: "/events",
-//     active: pathname.startsWith("/events"),
-//     links: [
-//       { name: "Live Concerts", icon: Music },
-//       { name: "Conferences & MICE", icon: Users },
-//       { name: "Art Exhibitions", icon: GalleryHorizontal },
-//       { name: "Food Festivals", icon: Pizza },
-//       { name: "Cultural Expos", icon: Globe },
-//       { name: "Workshops", icon: Hammer },
-//       { name: "Others", icon: Ellipsis },
-//     ],
-//   },
-// ];
-
 const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
@@ -145,7 +58,7 @@ const Navbar = () => {
   return (
     <>
       <header
-        className={`w-full hidden md:flex items-center justify-between z-50 fixed top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm border-b border-secondary/30" : "bg-transparent"} transition-all duration-300`}
+        className={`w-full flex items-center justify-between z-50 absolute lg:fixed top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm " : "bg-transparent"} transition-all duration-300`}
       >
         <div className="flex items-center justify-between py-1 mx-auto max-w-screen-2xl w-full px-14">
           {/* Brand Logo & Name */}
@@ -185,15 +98,15 @@ const Navbar = () => {
           </nav>
 
           {/* Action Controls (Bookmarks + Auth Link) */}
-          <div className="flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             {/* User Saved / Bookmarked Places Link */}
             <a
-              href="#bookmarks"
+              href="/bookmarks"
               aria-label="View bookmarked items"
-              className="relative p-2.5 rounded-xl border border-[#1E2B14]/10 bg-white/50 text-[#1E2B14] hover:bg-white hover:text-[#4A7C3A] transition-all shadow-sm group"
+              className="relative p-2.5 rounded-xl border border-canva/40 bg-white/30 text-[#1E2B14] hover:bg-white hover:text-[#4A7C3A] transition-all shadow-sm group"
             >
               <Bookmark
-                className={`w-5 h-5 transition-transform group-hover:scale-105 ${scrolled || pathname !== "/" ? "text-primary" : "text-canva"}`}
+                className={`w-5 h-5 transition-transform group-hover:scale-105 ${scrolled || pathname !== "/" ? "text-primary" : "text-canva hover:text-primary"}`}
               />
               {/* Visual indicator notification bubble */}
               <span className="absolute -top-1 -right-1 bg-[#F2B705] text-[#1E2B14] text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center border border-white shadow-sm">
