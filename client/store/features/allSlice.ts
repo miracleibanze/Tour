@@ -20,7 +20,7 @@ const initialState: AllState = {
   events: [],
   transport: [],
   destinations: [],
-  loading: false,
+  loading: true,
   error: null,
 };
 

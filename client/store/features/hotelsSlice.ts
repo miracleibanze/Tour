@@ -10,7 +10,7 @@ type HotelsState = {
 const initialState: HotelsState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

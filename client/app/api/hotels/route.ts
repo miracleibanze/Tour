@@ -45,7 +45,6 @@ export async function GET(request: Request) {
       })
       .from(hotels)
       .where(conditions.length ? and(...conditions) : undefined);
-
     return NextResponse.json({
       data,
       pagination: {

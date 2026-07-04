@@ -10,7 +10,7 @@ type EventsState = {
 const initialState: EventsState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

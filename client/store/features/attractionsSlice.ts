@@ -10,7 +10,7 @@ type AttractionsState = {
 const initialState: AttractionsState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

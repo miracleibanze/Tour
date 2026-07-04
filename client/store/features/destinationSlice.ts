@@ -29,7 +29,7 @@ type DestinationsState = {
 const initialState: DestinationsState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

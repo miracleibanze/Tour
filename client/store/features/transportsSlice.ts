@@ -10,7 +10,7 @@ type TransportState = {
 const initialState: TransportState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

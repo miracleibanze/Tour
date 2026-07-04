@@ -21,6 +21,8 @@ import {
   List,
   MapPin,
   Mountain,
+  RotateCcw,
+  RotateCw,
   Search,
   SlidersHorizontal,
   Utensils,
@@ -39,6 +41,7 @@ export default function ExplorePage() {
 
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [searchQuery, setSearchQuery] = useState("");
+
   const [selectedProvince, setSelectedProvince] = useState("All");
   const [selectedRating, setSelectedRating] = useState("All");
   const [filtersOpen, setFiltersOpen] = useState(false);
@@ -98,22 +101,46 @@ export default function ExplorePage() {
   };
 
   useEffect(() => {
+    setSearchQuery(searchParams.get("q") ?? "");
+  }, [searchParams]);
+
+  useEffect(() => {
     setPage(1);
   }, [activeTab]);
+
   useEffect(() => {
+    const q = searchParams.get("q")?.trim();
+
+    if (q) {
+      dispatch(
+        fetchSearch({
+          tab: activeTab === "all" ? undefined : activeTab,
+          q,
+          page,
+        }),
+      );
+
+      return;
+    }
+
     fetchMap[activeTab]?.();
-  }, [activeTab, page]);
+  }, [activeTab, page, searchParams, dispatch]);
 
   const runSearch = () => {
-    if (!searchQuery.trim()) return;
+    const q = searchQuery.trim();
 
-    dispatch(
-      fetchSearch({
-        tab: activeTab === "all" ? undefined : activeTab,
-        q: searchQuery,
-        page,
-      }),
-    );
+    const params = new URLSearchParams(searchParams.toString());
+
+    if (q) {
+      params.set("q", q);
+    } else {
+      params.delete("q");
+    }
+
+    params.delete("page");
+
+    router.push(`${pathname}?${params.toString()}`);
+    setPage(1);
   };
 
   const tabs: { id: ExploreTab; label: string; icon: React.ElementType }[] = [
@@ -149,20 +176,30 @@ export default function ExplorePage() {
     transport: transports.loading,
   };
 
-  const isLoading =
-    searchQuery.trim() !== "" ? search.loading : loadingMap[activeTab];
+  const isLoading = searchParams.get("q")
+    ? search.loading
+    : loadingMap[activeTab];
 
   const items = useMemo(() => {
-    if (searchQuery.trim()) {
+    const isSearching = searchParams.get("q");
+
+    if (isSearching) {
+      if (activeTab !== "all") {
+        return {
+          [activeTab]: search.results || [],
+        } as GroupedPlaces;
+      }
+
       return {
-        hotels: search.grouped.hotels,
-        restaurants: search.grouped.restaurants,
-        cafes: search.grouped.cafes,
-        attractions: search.grouped.attractions,
-        events: search.grouped.events,
-        transport: search.grouped.transport,
+        hotels: search.grouped.hotels || [],
+        restaurants: search.grouped.restaurants || [],
+        cafes: search.grouped.cafes || [],
+        attractions: search.grouped.attractions || [],
+        events: search.grouped.events || [],
+        transport: search.grouped.transport || [],
       };
     }
+
     if (activeTab === "all") {
       return {
         hotels: all.hotels,
@@ -181,13 +218,13 @@ export default function ExplorePage() {
     return {
       [activeTab]: dataMap[activeTab],
     } as GroupedPlaces;
-  }, [activeTab, search.grouped, search.results, all, dataMap]);
+  }, [activeTab, search.results, search.grouped, all, dataMap]);
 
   const currentListLength = useMemo(() => {
     return Object.values(items).reduce((acc, list) => acc + list.length, 0);
   }, [items]);
 
-  const finalyList = useMemo(() => {
+  const finalList = useMemo(() => {
     const result: GroupedPlaces = {
       hotels: [],
       restaurants: [],
@@ -356,6 +393,14 @@ export default function ExplorePage() {
                   Search
                 </button>
               </>
+            )}{" "}
+            {searchParams.get("q")?.trim() && searchQuery === "" && (
+              <button
+                onClick={() => runSearch()}
+                className="p-1 mr-2 rounded-full text-accent flex items-center justify-center hover:bg-secondary/40"
+              >
+                <RotateCw size={16} />
+              </button>
             )}
           </div>
           <button
@@ -456,15 +501,14 @@ export default function ExplorePage() {
         <div className="w-full flex justify-between items-center pb-6">
           <p className="text-sm text-gray-500">
             {searchQuery.trim()
-              ? activeTab === "all"
-                ? Object.values(finalyList).reduce((a, b) => a + b.length, 0)
-                : finalyList[activeTab]?.length || 0
+              ? `${Object.values(finalList).reduce(
+                  (a, b) => a + b.length,
+                  0,
+                )} results found for "${searchQuery}"`
               : activeTab === "all"
-                ? Object.values(finalyList).reduce((a, b) => a + b.length, 0)
-                : finalyList[activeTab]?.length || 0}{" "}
-            results found
+                ? "Discover hotels, restaurants, attractions, events, and more across Rwanda"
+                : `Showing ${finalList[activeTab]?.length || 0} ${activeTab}`}
           </p>
-
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -486,52 +530,47 @@ export default function ExplorePage() {
 
         {viewMode === "grid" ? (
           activeTab === "all" ? (
-            currentListLength > 0 ? (
-              Object.entries(finalyList).map(([key, list]) => (
-                <div key={key} className="mb-20">
-                  {/* HEADER (TITLE + VIEW MORE) */}
-                  {isLoading ? (
-                    <div className="flex flex-wrap gap-4">
-                      {Array.from({ length: 3 }).map((_, idx) => (
-                        <div
-                          key={idx}
-                          className="flex-none w-72 h-80 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer shimmer bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30"
-                        />
+            Object.entries(finalList).map(([key, list]) => (
+              <div key={key} className="mb-20">
+                {/* HEADER (TITLE + VIEW MORE) */}
+                {isLoading ? (
+                  <div className="flex flex-wrap gap-4">
+                    {Array.from({ length: 3 }).map((_, idx) => (
+                      <div
+                        key={idx}
+                        className="flex-none w-72 h-80 rounded-2xl overflow-hidden hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer shimmer bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30"
+                      />
+                    ))}
+                  </div>
+                ) : currentListLength > 0 ? (
+                  <>
+                    <div className="flex items-center justify-between mb-6">
+                      <h2 className="text-lg font-bold capitalize text-primary">
+                        {key}
+                      </h2>
+
+                      <button
+                        onClick={() => setTab(key as ExploreTab)}
+                        className="text-sm font-semibold text-accent hover:underline"
+                      >
+                        View more
+                      </button>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+                      {list.map((item, idx) => (
+                        <PlaceCard key={item.id} place={item} />
                       ))}
                     </div>
-                  ) : (
-                    list &&
-                    list.length > 0 && (
-                      <>
-                        <div className="flex items-center justify-between mb-6">
-                          <h2 className="text-lg font-bold capitalize text-primary">
-                            {key}
-                          </h2>
-
-                          <button
-                            onClick={() => setTab(key as ExploreTab)}
-                            className="text-sm font-semibold text-accent hover:underline"
-                          >
-                            View more
-                          </button>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                          {list.map((item, idx) => (
-                            <PlaceCard key={item.id} place={item} />
-                          ))}
-                        </div>
-                      </>
-                    )
-                  )}
-                </div>
-              ))
-            ) : (
-              <div className="flex flex-col items-center justify-center h-80 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4">
-                <span className="font-bold text-secondary/70">
-                  Didn't find what you are looking for, Try again later
-                </span>
+                  </>
+                ) : (
+                  <div className="flex flex-col items-center justify-center h-80 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4">
+                    <span className="font-bold text-secondary/70">
+                      Didn't find what you are looking for, Try again later
+                    </span>
+                  </div>
+                )}
               </div>
-            )
+            ))
           ) : isLoading ? (
             <div className="flex flex-wrap gap-4">
               {Array.from({ length: 3 }).map((_, idx) => (
@@ -543,8 +582,8 @@ export default function ExplorePage() {
             </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-              {finalyList[activeTab] && finalyList[activeTab].length > 0 ? (
-                finalyList[activeTab].map((item: Place) => (
+              {currentListLength > 0 ? (
+                finalList[activeTab].map((item: Place) => (
                   <PlaceCard key={item.id} place={item} />
                 ))
               ) : (
@@ -566,7 +605,7 @@ export default function ExplorePage() {
                   />
                 ))
               : activeTab === "all"
-                ? Object.entries(finalyList).map(([key, list]) => (
+                ? Object.entries(finalList).map(([key, list]) => (
                     <div key={key} className="mb-20">
                       <div className="border-b border-foreground py-3 flex items-center justify-between mb-3">
                         <h2 className="text-lg font-bold capitalize text-primary">
@@ -639,7 +678,7 @@ export default function ExplorePage() {
                       ))}
                     </div>
                   ))
-                : finalyList[activeTab]?.map((item: Place) => (
+                : finalList[activeTab]?.map((item: Place) => (
                     <div
                       key={item.id}
                       className="border-b border-accent/20 flex overflow-hidden hover:bg-foreground transition-all cursor-pointer group p-4"

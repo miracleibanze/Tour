@@ -10,7 +10,7 @@ type CafesState = {
 const initialState: CafesState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

@@ -18,6 +18,7 @@ import {
   Star,
   Zap,
   Mountain,
+  X,
 } from "lucide-react";
 import Kigali from "@/public/Kigali - Rwanda 🇷🇼.jpg";
 import Banner from "../components/UI/Banner";
@@ -48,6 +49,8 @@ export default function Home() {
   });
   const [loading, setLoading] = useState(true);
   const [circles, setCircles] = useState<{ top: string; left: string }[]>([]);
+  const [query, setQuery] = useState("");
+  const [selectedTab, setSelectedTab] = useState("");
 
   const {
     destinations,
@@ -92,6 +95,15 @@ export default function Home() {
 
     fetchLiveData();
   }, []);
+
+  const handleSearch = () => {
+    if (!query.trim()) return;
+    if (selectedTab === "")
+      return router.push(`/explore?q=${encodeURIComponent(query.trim())}`);
+    return router.push(
+      `/explore?q=${encodeURIComponent(query.trim())}&tab=${selectedTab}`,
+    );
+  };
 
   const analyticsData = [
     {
@@ -184,7 +196,7 @@ export default function Home() {
           Discover the best around you
         </h1>
         <p className="text-canva-medium text-base md:text-lg font-medium leading-relaxed max-w-2xl text-center">
-          Find top hotels, restaurants and cafés in Rwanda. Compare prices, read
+          Find top hotels, restaurants and cafes in Rwanda. Compare prices, read
           reviews and book easily.
         </p>
 
@@ -204,30 +216,36 @@ export default function Home() {
         </div>
         <div className="lg:col-span-5 w-full flex flex-col mx-auto items-center justify-center">
           <div className="w-full max-w-2xl bg-white/20 backdrop-blur-sm border border-white/30 rounded-3xl p-4 shadow-xl flex flex-col gap-3">
-            <div className="w-full relative flex items-center bg-white rounded-full pl-6 pr-1.5 py-1.5 shadow-inner gap-2">
+            <div className="w-full relative flex items-center bg-white rounded-full px-1.5 py-1.5 shadow-inner gap-2">
+              {selectedTab !== "" && (
+                <div className="flex items-center bg-secondary/20 pl-3 pr-1 py-1 gap-2 rounded-full">
+                  {selectedTab}
+                  <button
+                    onClick={() => setSelectedTab("")}
+                    className="p-1 rounded-full text-accent flex items-center justify-center hover:bg-secondary/40"
+                  >
+                    <X size={16} />
+                  </button>
+                </div>
+              )}
               <input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    handleSearch();
+                  }
+                }}
                 type="text"
-                placeholder="Search hotels, cafés, events ..."
-                className="w-full bg-transparent text-[#1E2B14] placeholder-gray-400 text-sm font-medium outline-none border-none focus:ring-0 p-0"
+                placeholder="Search hotels, cafes, events ..."
+                className="w-full pl-3 bg-transparent text-[#1E2B14] placeholder-gray-400 text-sm font-medium outline-none border-none focus:ring-0 p-0"
               />
 
-              <button className="p-1.5 hover:bg-gray-300 rounded-full transition-colors shrink-0">
-                <svg
-                  className="w-5 h-5 text-gray-700"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                  />
-                </svg>
-              </button>
-              <button className="flex bg-links hover:bg-accent duration-500 py-2 px-4 rounded-full text-white items-center">
-                <Search className="w-5 h-5 shrink-0" />
+              <button
+                onClick={handleSearch}
+                className="flex bg-links hover:bg-accent duration-500 py-2 px-4 rounded-full text-white items-center"
+              >
+                <Search size={16} className="shrink-0" />
                 &nbsp;Search
               </button>
             </div>
@@ -237,15 +255,19 @@ export default function Home() {
                 { name: "attractions", icon: Mountain },
                 { name: "hotels", icon: BedDouble },
                 { name: "restaurants", icon: UtensilsCrossed },
-                { name: "cafés", icon: Coffee },
+                { name: "cafes", icon: Coffee },
                 { name: "events", icon: CalendarDays },
               ].map((item) => (
                 <button
                   key={item.name}
-                  onClick={() => router.push(`/explore?tab=${item.name}`)}
-                  className="flex items-center  justify-center gap-2 bg-white hover:bg-gray-50 text-[#1E2B14] text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0 capitalize"
+                  onClick={() =>
+                    selectedTab === item.name
+                      ? setSelectedTab("")
+                      : setSelectedTab(item.name)
+                  }
+                  className={`flex items-center  justify-center gap-2 text-xs font-bold py-2.5 px-4 rounded-full  min-w-28 shadow-sm transition-colors shrink-0 capitalize ${selectedTab === item.name ? "bg-accent text-canva hover:bg-accent/60" : "bg-white hover:bg-gray-50 text-[#1E2B14]"}`}
                 >
-                  <item.icon className="w-4 h-4 text-gray-700" />
+                  <item.icon className="w-4 h-4" />
                   {item.name}
                 </button>
               ))}

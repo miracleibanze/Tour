@@ -66,6 +66,8 @@ export async function GET(request: Request) {
         .from(table)
         .where(and(...conditions));
 
+      console.log({ data: data.length });
+
       return NextResponse.json({
         tab,
         data,
@@ -125,6 +127,14 @@ export async function GET(request: Request) {
         .limit(12),
     ]);
 
+    console.log({
+      hotels: hotelResults.length,
+      restaurants: restaurantResults.length,
+      cafes: cafeResults.length,
+      attractions: attractionResults.length,
+      events: eventResults.length,
+      transport: transportResults.length,
+    });
     return NextResponse.json({
       hotels: hotelResults,
       restaurants: restaurantResults,

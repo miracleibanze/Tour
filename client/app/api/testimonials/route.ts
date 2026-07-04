@@ -6,9 +6,9 @@ import { desc, ilike, and, count } from "drizzle-orm";
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-
+    // console.log("inside testimonial");
     const page = Number(searchParams.get("page")) || 1;
-    const limit = Number(searchParams.get("limit")) || 24;
+    const limit = Number(searchParams.get("limit")) || 3;
     const offset = (page - 1) * limit;
 
     const search = searchParams.get("q");

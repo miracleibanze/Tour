@@ -21,7 +21,7 @@ type TestimonialsState = {
 const initialState: TestimonialsState = {
   data: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 

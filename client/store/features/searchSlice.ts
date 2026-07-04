@@ -26,7 +26,7 @@ const initialState: SearchState = {
   },
   results: [],
   pagination: null,
-  loading: false,
+  loading: true,
   error: null,
 };
 
