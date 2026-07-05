@@ -3,8 +3,12 @@ import { db } from "@/lib/db";
 import { events } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 
-export async function GET(_: Request, { params }: any) {
-  const [data] = await db.select().from(events).where(eq(events.id, params.id));
+export async function GET(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
+  const [data] = await db.select().from(events).where(eq(events.id, id));
 
   if (!data) {
     return NextResponse.json({ error: "Event not found" }, { status: 404 });
@@ -13,22 +17,30 @@ export async function GET(_: Request, { params }: any) {
   return NextResponse.json(data);
 }
 
-export async function PATCH(request: Request, { params }: any) {
+export async function PATCH(
+  request: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
   const body = await request.json();
 
   const [updated] = await db
     .update(events)
     .set(body)
-    .where(eq(events.id, params.id))
+    .where(eq(events.id, id))
     .returning();
 
   return NextResponse.json(updated);
 }
 
-export async function DELETE(_: Request, { params }: any) {
+export async function DELETE(
+  _: Request,
+  { params }: { params: Promise<{ id: string }> },
+) {
+  const { id } = await params;
   const [deleted] = await db
     .delete(events)
-    .where(eq(events.id, params.id))
+    .where(eq(events.id, id))
     .returning();
 
   return NextResponse.json(deleted);

@@ -33,14 +33,18 @@ const Navbar = () => {
     { label: "Home", page: "/", active: pathname === "/", home: true },
     {
       label: "Explore",
-      page: "explore",
+      page: "/explore",
       active: pathname.startsWith("/explore"),
     },
-    { label: "Map", page: "map", active: pathname.startsWith("/map") },
-    { label: "Events", page: "events", active: pathname.startsWith("/events") },
+    { label: "Map", page: "/map", active: pathname.startsWith("/map") },
+    {
+      label: "Events",
+      page: "/events",
+      active: pathname.startsWith("/events"),
+    },
     {
       label: "Transport",
-      page: "transport",
+      page: "/transport",
       active: pathname.startsWith("/transport"),
     },
   ];

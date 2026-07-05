@@ -1,14 +1,16 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PlaceCard } from "./Reusables";
 import { FC, useRef } from "react";
+import Link from "next/link";
 
 export const HorizontalScroll: FC<{
   title: string;
   subtitle: string;
   loading: boolean;
   items: Place[];
+  tab: string;
   onSeeAll: () => void;
-}> = ({ title, subtitle, loading, items, onSeeAll }) => {
+}> = ({ title, subtitle, loading, items, tab, onSeeAll }) => {
   const ref = useRef<HTMLDivElement>(null);
   const scroll = (dir: "left" | "right") => {
     if (ref.current)
@@ -65,9 +67,13 @@ export const HorizontalScroll: FC<{
             ))
           ) : items.length && items.length > 0 ? (
             items.map((item) => (
-              <div key={item.id} className="flex-none w-72">
-                <PlaceCard place={item} />
-              </div>
+              <Link
+                href={`/${tab}/${item.id}`}
+                key={item.id}
+                className="flex-none w-72"
+              >
+                <PlaceCard place={item} tab={tab} href={item.id} />
+              </Link>
             ))
           ) : (
             <div className="flex flex-col items-center justify-center h-52 w-full">

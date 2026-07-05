@@ -3,7 +3,7 @@
 :root {
   /* --- Brand & Layout Colors --- */
   /* Main background gradient stops simulating the image background */
-  --canva: #fffde6;
+  --canva: #fffffe;
   --canva-medium: #d7e4a1;
 
   /* Component Surfaces (The soft glassmorphism cards) */
@@ -18,7 +18,7 @@
   --professional: #0d1b2a; /* Professional text variant */
 
   --foreground: #f5f5f5; /* Foreground text for better readability */
-  --secondary: #6b7280; /* Secondary text / Captions / Subtitles */
+  --secondary: #565a63; /* Secondary text / Captions / Subtitles */
   --inverse: #ffffff; /* Text inside dark buttons (e.g., "Sign In") */
 
   /* --- Accents & UI Elements --- */

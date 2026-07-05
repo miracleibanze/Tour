@@ -11,16 +11,32 @@ export async function GET(request: Request) {
     const limit = Number(searchParams.get("limit")) || 24;
     const offset = (page - 1) * limit;
 
+    const category = searchParams.get("category");
+    const featured = searchParams.get("featured");
     const search = searchParams.get("q");
 
     const conditions = [];
+
+    if (category) {
+      conditions.push(eq(events.category, category));
+    }
 
     if (search) {
       conditions.push(ilike(events.name, `%${search}%`));
     }
 
     const data = await db
-      .select()
+      .select({
+        id: events.id,
+        name: events.name,
+        image: events.image,
+        rating: events.rating,
+        reviews: events.reviews,
+        price: events.price,
+        location: events.location,
+        category: events.category,
+        date: events.createdAt,
+      })
       .from(events)
       .where(conditions.length ? and(...conditions) : undefined)
       .orderBy(desc(events.date))

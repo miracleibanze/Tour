@@ -36,6 +36,7 @@ import { fetchAttractions } from "@/store/features/attractionsSlice";
 import { fetchEvents } from "@/store/features/eventsSlice";
 import { fetchTestimonials } from "@/store/features/testimonialsSlice";
 import Footer from "@/components/Footer";
+import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
@@ -342,6 +343,7 @@ export default function Home() {
         loading={hotels.loading}
         items={hotels.data}
         onSeeAll={() => router.push("/explore?tab=hotels")}
+        tab="hotels"
       />
 
       <section className="py-16 max-w-7xl mx-auto px-4">
@@ -387,6 +389,7 @@ export default function Home() {
         items={restaurants.data}
         onSeeAll={() => router.push("/explore?tab=restaurants")}
         loading={restaurants.loading}
+        tab="restaurants"
       />
 
       <HorizontalScroll
@@ -395,6 +398,7 @@ export default function Home() {
         items={attractions.data}
         onSeeAll={() => router.push("/explore?tab=attractions")}
         loading={attractions.loading}
+        tab="attractions"
       />
 
       <section className="py-16 max-w-7xl mx-auto px-4">
@@ -413,10 +417,10 @@ export default function Home() {
             ))
           ) : events.data.length && events.data.length > 0 ? (
             events.data.map((event) => (
-              <div
+              <Link
+                href={`/events/${event.id}`}
                 key={event.id}
                 className="bg-surface rounded-2xl overflow-hidden border border-secondary/30 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 cursor-pointer group"
-                onClick={() => router.push("/events")}
               >
                 <div className="relative h-44 bg-secondary/30 overflow-hidden">
                   <img
@@ -458,7 +462,7 @@ export default function Home() {
                     </span>
                   </div>
                 </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="flex flex-col items-center justify-center h-52 w-full">

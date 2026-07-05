@@ -32,7 +32,18 @@ export async function GET(request: Request) {
     }
 
     const data = await db
-      .select()
+      .select({
+        id: cafes.id,
+        name: cafes.name,
+        image: cafes.image,
+        rating: cafes.rating,
+        reviews: cafes.reviews,
+        price: cafes.price,
+        location: cafes.location,
+        category: cafes.category,
+        tags: cafes.tags,
+        featured: cafes.featured,
+      })
       .from(cafes)
       .where(conditions.length ? and(...conditions) : undefined)
       .orderBy(desc(cafes.rating))

@@ -4,10 +4,12 @@ import {
   Bookmark,
   ChevronRight,
   Heart,
+  Link,
   MapPin,
   Star,
   TrendingUp,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 export function StarRating({
@@ -44,7 +46,7 @@ export function Tag({
   };
   return (
     <span
-      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium font-mono ${styles[color]}`}
+      className={`inline-flex items-center px-3 py-0.5 rounded-full text-xs font-medium font-mono ${styles[color]}`}
     >
       {label}
     </span>
@@ -54,14 +56,20 @@ export function Tag({
 export function PlaceCard({
   place,
   className,
+  href,
+  tab,
 }: {
   place: Place;
   className?: string;
+  href: string;
+  tab: string;
 }) {
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
+  const router = useRouter();
   return (
     <div
+      onClick={() => router.push(`/${tab}/${href}`)}
       className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer ${className ? className : ""}`}
     >
       <div className="relative overflow-hidden h-48 bg-secondary/20">

@@ -28,12 +28,12 @@ import {
   Utensils,
   X,
 } from "lucide-react";
-import { useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchAll } from "@/store/features/allSlice";
 import { fetchSearch } from "@/store/features/searchSlice";
 
-export default function ExplorePage() {
+function ExplorePageContent() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
@@ -557,8 +557,13 @@ export default function ExplorePage() {
                       </button>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
-                      {list.map((item, idx) => (
-                        <PlaceCard key={item.id} place={item} />
+                      {list.map((item) => (
+                        <PlaceCard
+                          key={item.id}
+                          place={item}
+                          href={item.id}
+                          tab={key}
+                        />
                       ))}
                     </div>
                   </>
@@ -584,7 +589,12 @@ export default function ExplorePage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
               {currentListLength > 0 ? (
                 finalList[activeTab].map((item: Place) => (
-                  <PlaceCard key={item.id} place={item} />
+                  <PlaceCard
+                    key={item.id}
+                    place={item}
+                    tab={activeTab}
+                    href={item.id}
+                  />
                 ))
               ) : (
                 <div className="flex flex-col items-center justify-center h-80 w-full sm:col-span-2 lg:col-span-3 xl:col-span-4">
@@ -739,5 +749,13 @@ export default function ExplorePage() {
       </div>
       {Pagination.bottom}
     </div>
+  );
+}
+
+export default function ExplorePage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ExplorePageContent />
+    </Suspense>
   );
 }
