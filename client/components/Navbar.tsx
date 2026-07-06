@@ -62,11 +62,14 @@ const Navbar = () => {
   return (
     <>
       <header
-        className={`w-full flex items-center justify-between z-50 absolute lg:fixed top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm " : "bg-transparent"} transition-all duration-300`}
+        className={`w-full md:flex items-center justify-between z-50 lg:fixed ${pathname === "/" ? "hidden" : "absolute"} top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-transparent"} transition-all duration-300`}
       >
-        <div className="flex items-center justify-between py-1 mx-auto max-w-screen-2xl w-full px-14">
+        <div className="flex items-center justify-between py-1 mx-auto max-w-7xl w-full px-4">
           {/* Brand Logo & Name */}
-          <div className="flex items-center cursor-pointer">
+          <div
+            className="flex items-center cursor-pointer"
+            onClick={() => router.push("/")}
+          >
             <Image
               src={logo}
               alt="logo"
@@ -81,7 +84,7 @@ const Navbar = () => {
                 DHHD
               </span>
               <span
-                className={`${scrolled || pathname !== "/" ? "text-accent" : "text-surface"} text-[#4A7C3A] text-xs font-medium`}
+                className={`${scrolled || pathname !== "/" ? "text-accent" : "text-surface"} text-xs font-medium`}
               >
                 Hospitality Platform
               </span>

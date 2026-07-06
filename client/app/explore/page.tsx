@@ -350,7 +350,7 @@ function ExplorePageContent() {
     return {
       top: <div className="flex justify-end">{common}</div>,
       bottom: (
-        <div className="flex justify-center w-full max-w-screen-2xl px-14 pt-8">
+        <div className="flex justify-center w-full max-w-7xl px-14 pt-8">
           {common}
         </div>
       ),

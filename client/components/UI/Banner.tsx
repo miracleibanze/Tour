@@ -12,7 +12,7 @@ const Banner: FC<{ children: React.ReactNode; image: StaticImageData }> = ({
           src={image}
           loading="eager"
           alt="kigali image"
-          className="w-full h-full"
+          className="w-full h-full object-cover object-top"
         />
       </div>
       <div className="w-full flex flex-col items-center gap-8 mt-12 mb-8 z-10">

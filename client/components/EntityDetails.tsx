@@ -58,7 +58,7 @@ const EntityDetails: FC<{ place: DetailedPlace }> = ({ place }) => {
   return (
     <div className="min-h-screen bg-foreground pb-24">
       {/* Hero gallery */}
-      <div className="relative h-80 md:h-96 bg-secondary/50 overflow-hidden max-w-screen-2xl mx-auto rounded-b-4xl">
+      <div className="relative h-80 md:h-96 bg-secondary/50 overflow-hidden max-w-7xl mx-auto rounded-b-4xl">
         <img
           src={place.image}
           alt={place.name}
@@ -88,7 +88,7 @@ const EntityDetails: FC<{ place: DetailedPlace }> = ({ place }) => {
             <Share2 className="w-5 h-5" />
           </button>
         </div>
-        <div className="absolute bottom-16 min-[1400px]:bottom-4 right-4 lg:right-12">
+        <div className="absolute bottom-16  right-4 lg:right-12">
           <button
             onClick={() => setActiveTab("photos")}
             className="flex items-center gap-2 bg-white/90 backdrop-blur-sm text-primary px-4 py-2 rounded-full text-sm font-medium shadow hover:bg-white transition-colors"

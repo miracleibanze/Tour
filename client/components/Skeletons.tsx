@@ -2,7 +2,7 @@ export const EntitySkeleton = () => {
   return (
     <div className="min-h-screen bg-foreground pb-24">
       {/* Hero gallery */}
-      <div className="h-80 md:h-96 bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer overflow-hidden max-w-screen-2xl mx-auto rounded-b-4xl" />
+      <div className="h-80 md:h-96 bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer overflow-hidden max-w-7xl mx-auto rounded-b-4xl" />
 
       <div className="max-w-5xl mx-auto px-4 -mt-12 relative z-10">
         {/* Header card */}

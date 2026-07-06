@@ -187,7 +187,7 @@ export default function Home() {
             >
               DHHD
             </span>
-            <span className={`text-accent text-xs font-medium`}>
+            <span className={`text-surface text-xs font-medium`}>
               Hospitality Platform
             </span>
           </div>
