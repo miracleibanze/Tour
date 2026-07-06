@@ -9,6 +9,7 @@ import cafesReducer from "./features/cafesSlice";
 import transportsReducer from "./features/transportsSlice";
 import allReducer from "./features/allSlice";
 import searchReducer from "./features/searchSlice";
+import mapReducer from "./features/mapSlice";
 
 export const store = configureStore({
   reducer: {
@@ -22,6 +23,7 @@ export const store = configureStore({
     transports: transportsReducer,
     all: allReducer,
     search: searchReducer,
+    map: mapReducer,
   },
 });
 

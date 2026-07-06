@@ -46,7 +46,7 @@ export async function GET(request: Request) {
     if (tab && tab in TABLES) {
       const page = Math.max(1, Number(searchParams.get("page")) || 1);
 
-      const limit = 24;
+      const limit = 12;
       const offset = (page - 1) * limit;
 
       const table = TABLES[tab as keyof typeof TABLES];

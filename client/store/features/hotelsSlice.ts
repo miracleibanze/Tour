@@ -16,7 +16,7 @@ const initialState: HotelsState = {
 
 const DEFAULT_PARAMS = {
   page: 1,
-  limit: 24,
+  limit: 12,
   category: "",
   featured: undefined as boolean | undefined,
   search: "",

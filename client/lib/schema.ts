@@ -38,6 +38,9 @@ export const hotels = pgTable("hotels", {
   writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
   contact: jsonb("contact").$type<Contacts>(),
   workingHours: jsonb("working_hours").$type<Workinghours>().default([]),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -52,17 +55,29 @@ export const restaurants = pgTable("restaurants", {
   name: varchar("name", { length: 255 }).notNull(),
   image: text("image").notNull(),
 
+  imageCollection: text("image_collection").array(),
+
   rating: real("rating").default(0),
   reviews: integer("reviews").default(0),
 
   price: varchar("price", { length: 50 }),
   location: varchar("location", { length: 255 }),
-
   category: varchar("category", { length: 100 }),
+
   tags: text("tags").array(),
 
   featured: boolean("featured").default(false),
+
   description: text("description"),
+
+  performance: text("performance"), // JSON string
+
+  writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
+  contact: jsonb("contact").$type<Contacts>(),
+  workingHours: jsonb("working_hours").$type<Workinghours>().default([]),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -77,17 +92,29 @@ export const cafes = pgTable("cafes", {
   name: varchar("name", { length: 255 }).notNull(),
   image: text("image").notNull(),
 
+  imageCollection: text("image_collection").array(),
+
   rating: real("rating").default(0),
   reviews: integer("reviews").default(0),
 
   price: varchar("price", { length: 50 }),
   location: varchar("location", { length: 255 }),
-
   category: varchar("category", { length: 100 }),
+
   tags: text("tags").array(),
 
   featured: boolean("featured").default(false),
+
   description: text("description"),
+
+  performance: text("performance"), // JSON string
+
+  writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
+  contact: jsonb("contact").$type<Contacts>(),
+  workingHours: jsonb("working_hours").$type<Workinghours>().default([]),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -102,17 +129,29 @@ export const attractions = pgTable("attractions", {
   name: varchar("name", { length: 255 }).notNull(),
   image: text("image").notNull(),
 
+  imageCollection: text("image_collection").array(),
+
   rating: real("rating").default(0),
   reviews: integer("reviews").default(0),
 
   price: varchar("price", { length: 50 }),
   location: varchar("location", { length: 255 }),
-
   category: varchar("category", { length: 100 }),
+
   tags: text("tags").array(),
 
   featured: boolean("featured").default(false),
+
   description: text("description"),
+
+  performance: text("performance"), // JSON string
+
+  writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
+  contact: jsonb("contact").$type<Contacts>(),
+  workingHours: jsonb("working_hours").$type<Workinghours>().default([]),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -124,14 +163,28 @@ export const events = pgTable("events", {
   name: varchar("name", { length: 255 }).notNull(),
   image: text("image").notNull(),
 
-  date: varchar("date", { length: 100 }).notNull(),
-  location: varchar("location", { length: 255 }).notNull(),
-
-  category: varchar("category", { length: 100 }),
-  price: varchar("price", { length: 50 }),
+  imageCollection: text("image_collection").array(),
 
   rating: real("rating").default(0),
   reviews: integer("reviews").default(0),
+
+  price: varchar("price", { length: 50 }),
+
+  location: varchar("location", { length: 255 }),
+
+  category: varchar("category", { length: 100 }),
+
+  date: varchar("date", { length: 100 }).notNull(),
+
+  description: text("description"),
+
+  performance: text("performance"), // JSON string
+
+  writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
+  contact: jsonb("contact").$type<Contacts>(),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -143,17 +196,29 @@ export const transport = pgTable("transport", {
   name: varchar("name", { length: 255 }).notNull(),
   image: text("image").notNull(),
 
+  imageCollection: text("image_collection").array(),
+
   rating: real("rating").default(0),
   reviews: integer("reviews").default(0),
 
   price: varchar("price", { length: 50 }),
   location: varchar("location", { length: 255 }),
-
   category: varchar("category", { length: 100 }),
 
   tags: text("tags").array(),
 
   featured: boolean("featured").default(false),
+
+  description: text("description"),
+
+  performance: text("performance"), // JSON string
+
+  writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
+  contact: jsonb("contact").$type<Contacts>(),
+  workingHours: jsonb("working_hours").$type<Workinghours>().default([]),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -167,6 +232,9 @@ export const destinations = pgTable("destinations", {
   image: text("image").notNull(),
 
   places: integer("places").default(0),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
@@ -185,6 +253,9 @@ export const testimonials = pgTable("testimonials", {
   rating: integer("rating").default(5),
 
   trip: varchar("trip", { length: 255 }),
+  // Add these to both tables
+  latitude: real("latitude"),
+  longitude: real("longitude"),
 
   createdAt: timestamp("created_at").defaultNow(),
 });

@@ -33,37 +33,37 @@ export async function GET(request: Request) {
         .select()
         .from(hotels)
         .where(condition ? condition(hotels) : undefined)
-        .limit(12),
+        .limit(7),
       db
         .select()
         .from(restaurants)
         .where(condition ? condition(restaurants) : undefined)
-        .limit(12),
+        .limit(7),
       db
         .select()
         .from(cafes)
         .where(condition ? condition(cafes) : undefined)
-        .limit(12),
+        .limit(7),
       db
         .select()
         .from(attractions)
         .where(condition ? condition(attractions) : undefined)
-        .limit(12),
+        .limit(7),
       db
         .select()
         .from(events)
         .where(condition ? condition(events) : undefined)
-        .limit(12),
+        .limit(7),
       db
         .select()
         .from(transport)
         .where(condition ? condition(transport) : undefined)
-        .limit(12),
+        .limit(7),
       db
         .select()
         .from(destinations)
         .where(condition ? condition(destinations) : undefined)
-        .limit(12),
+        .limit(7),
     ]);
 
     return NextResponse.json({

@@ -109,6 +109,17 @@ function ExplorePageContent() {
   }, [activeTab]);
 
   useEffect(() => {
+    const handleResize = () => {
+      setViewMode(window.innerWidth < 768 ? "list" : "grid");
+    };
+
+    window.addEventListener("resize", handleResize);
+    handleResize();
+
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
     const q = searchParams.get("q")?.trim();
 
     if (q) {
@@ -124,6 +135,8 @@ function ExplorePageContent() {
     }
 
     fetchMap[activeTab]?.();
+
+    window.scrollTo({ top: 0 });
   }, [activeTab, page, searchParams, dispatch]);
 
   const runSearch = () => {
@@ -152,6 +165,15 @@ function ExplorePageContent() {
     { id: "events", label: "Events", icon: Calendar },
     { id: "transport", label: "Transport", icon: Bus },
   ];
+
+  const allPagination: Record<Exclude<ExploreTab, "all">, Pagination | null> = {
+    hotels: hotels.pagination,
+    restaurants: restaurants.pagination,
+    cafes: cafes.pagination,
+    attractions: attractions.pagination,
+    events: events.pagination,
+    transport: transports.pagination,
+  };
 
   const dataMap: Record<Exclude<ExploreTab, "all">, Place[]> = {
     hotels: hotels.data,
@@ -307,10 +329,9 @@ function ExplorePageContent() {
     return result;
   }, [items, sortBy]);
 
-  const PAGE_SIZE = 24;
-
-  const canGoPrevious = page > 1;
-  const canGoNext = currentListLength === PAGE_SIZE;
+  const canGoPrevious =
+    activeTab !== "all" && allPagination[activeTab]?.hasPrevious;
+  const canGoNext = activeTab !== "all" && allPagination[activeTab]?.hasNext;
   const hasPages = canGoNext || canGoPrevious;
 
   const Pagination = useMemo(() => {
@@ -326,21 +347,31 @@ function ExplorePageContent() {
         <button
           onClick={goPrev}
           disabled={!canGoPrevious}
-          className={`p-2 rounded-full border transition border-accent text-accent ${!canGoPrevious ? "opacity-0 pointer-events-none" : ""}`}
+          className={`p-2 rounded-full border transition hover:bg-accent hover:text-canva border-accent text-accent ${!canGoPrevious ? "opacity-0 pointer-events-none" : ""}`}
         >
           <ChevronsLeft />
         </button>
 
         {hasPages && (
-          <span className="text-sm font-medium text-secondary">
-            Page {page}
-          </span>
+          <div className="text-sm font-medium text-secondary flex gap-2">
+            {Array.from({
+              length: allPagination[activeTab]?.totalPages ?? 1,
+            }).map((_, idx) => (
+              <button
+                key={idx}
+                onClick={() => setPage(idx + 1)}
+                className={`min-w-8 flex-0 aspect-square p-1 rounded-md border-secondary/30 ${allPagination[activeTab]?.page !== idx + 1 ? "border" : ""} hover:border-accent hover:bg-secondary/10`}
+              >
+                <u>{idx + 1}</u>
+              </button>
+            ))}
+          </div>
         )}
 
         <button
           onClick={goNext}
           disabled={!canGoNext}
-          className={`p-2 rounded-full border transition border-accent text-accent ${!canGoNext ? "opacity-0 pointer-events-none" : ""}`}
+          className={`p-2 rounded-full border transition hover:bg-accent hover:text-canva border-accent text-accent ${!canGoNext ? "opacity-0 pointer-events-none" : ""}`}
         >
           <ChevronsRight />
         </button>
@@ -407,9 +438,10 @@ function ExplorePageContent() {
             onClick={() => setFiltersOpen(!filtersOpen)}
             className={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium transition-colors ${filtersOpen ? "bg-accent text-white border-accent/50" : "border-accent/30 text-accent hover:bg-foreground"}`}
           >
-            <SlidersHorizontal className="w-4 h-4" /> Filters
+            <SlidersHorizontal className="w-4 h-4" />
+            <span className="ml-2 max-sm:hidden">Filters</span>
           </button>
-          <div className="hidden sm:flex border border-accent/30 rounded-full overflow-hidden">
+          <div className="flex border border-accent/30 rounded-full overflow-hidden">
             {(
               [
                 ["grid", LayoutGrid],
@@ -611,7 +643,7 @@ function ExplorePageContent() {
               ? Array.from({ length: 2 }).map((_, idx) => (
                   <div
                     key={idx}
-                    className="rounded-2xl bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer h-36 w-full"
+                    className="bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer h-32 my-2 w-full"
                   />
                 ))
               : activeTab === "all"
@@ -678,10 +710,6 @@ function ExplorePageContent() {
                                   ({item.reviews.toLocaleString()} reviews)
                                 </span>
                               </div>
-
-                              <button className="flex items-center gap-1.5 text-primary text-sm font-semibold hover:gap-2 transition-all">
-                                View details <ArrowRight className="w-4 h-4" />
-                              </button>
                             </div>
                           </div>
                         </div>
