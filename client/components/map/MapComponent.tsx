@@ -113,6 +113,10 @@ export default function MapPage() {
   const { pins } = useSelector((state: RootState) => state.map);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<ExploreTab>("all");
+  const [userLocation, setUserLocation] = useState<{
+    lat: number;
+    lng: number;
+  } | null>(null);
   const dispatch = useAppDispatch();
 
   const layers: ExploreTab[] = [
@@ -131,6 +135,25 @@ export default function MapPage() {
   useEffect(() => {
     dispatch(fetchPins());
   }, [dispatch]);
+
+  function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+    const R = 6371; // Earth's radius in km
+
+    // Convert degrees to radians
+    const dLat = (lat2 - lat1) * (Math.PI / 180);
+    const dLon = (lon2 - lon1) * (Math.PI / 180);
+
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return Math.round(R * c);
+  }
 
   return (
     <div className="fixed inset-0 pt-16 pb-14 lg:pb-0 flex">
@@ -157,24 +180,37 @@ export default function MapPage() {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {filteredPins.map((pin) => (
-            <div
-              key={pin.id}
-              onClick={() => setSelectedPinId(pin.id)}
-              className={`p-3 rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex gap-3`}
-            >
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                <img
-                  src={pin.image}
-                  alt="image"
-                  className="w-full h-full object-cover "
-                />
+          {filteredPins.map((pin) => {
+            const distance = userLocation
+              ? getDistance(
+                  pin.lat,
+                  pin.lng,
+                  userLocation?.lat,
+                  userLocation?.lng,
+                )
+              : null;
+            return (
+              <div
+                key={pin.id}
+                onClick={() => setSelectedPinId(pin.id)}
+                className={`p-3 rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex gap-3`}
+              >
+                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                  <img
+                    src={pin.image}
+                    alt="image"
+                    className="w-full h-full object-cover "
+                  />
+                </div>
+                <div className="flex-1">
+                  <h4 className="font-semibold text-sm">{pin.name}</h4>
+                  <p className="italic text-sm">
+                    {pin.location + " " + (distance ? `(${distance}m)` : "")}
+                  </p>
+                </div>
               </div>
-              <div className="flex-1">
-                <h4 className="font-semibold text-sm">{pin.name}</h4>
-              </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -196,7 +232,11 @@ export default function MapPage() {
             />
           ))}
 
-          <UserLocation />
+          <UserLocation
+            onLocationFound={(location) => {
+              setUserLocation(location);
+            }}
+          />
         </MapContainer>
 
         {/* Overlays (Legend and Labels preserved) */}

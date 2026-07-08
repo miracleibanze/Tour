@@ -1,53 +1,78 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 
-export default function UserLocation() {
+interface UserLocationProps {
+  onLocationFound?: (location: { lat: number; lng: number }) => void;
+}
+
+export default function UserLocation({ onLocationFound }: UserLocationProps) {
   const map = useMap();
+  const markerRef = useRef<L.Marker | null>(null);
+  const circleRef = useRef<L.Circle | null>(null);
+  const hasZoomedRef = useRef(false);
+
+  // Keep callback stable to avoid re-running effect
+  const onLocationFoundRef = useRef(onLocationFound);
+  useEffect(() => {
+    onLocationFoundRef.current = onLocationFound;
+  }, [onLocationFound]);
 
   useEffect(() => {
-    if (!navigator.geolocation) {
-      console.log("Geolocation not supported");
-      return;
-    }
+    if (!navigator.geolocation) return;
 
-    navigator.geolocation.getCurrentPosition(
+    const userIcon = L.divIcon({
+      className: "",
+      html: `
+        <div style="
+          width:25px; height:25px; background:#2563eb;
+          border:3px solid white; border-radius:50%;
+          box-shadow:0 0 12px rgba(0,0,0,0.4);
+        "></div>
+      `,
+      iconSize: [18, 18],
+      iconAnchor: [9, 9],
+    });
+
+    const watchId = navigator.geolocation.watchPosition(
       (position) => {
-        const { latitude, longitude } = position.coords;
+        const { latitude: lat, longitude: lng, accuracy } = position.coords;
 
-        const userIcon = L.divIcon({
-          className: "",
-          html: `
-            <div style="
-              width:25px;
-              height:25px;
-              background:#2563eb;
-              border:5px solid white;
-              border-radius:50%;
-              box-shadow:0 0 20px rgba(0,0,0,.5);
-            ">
-            </div>
-          `,
-        });
+        onLocationFoundRef.current?.({ lat, lng });
 
-        L.marker([latitude, longitude], {
-          icon: userIcon,
-        })
-          .addTo(map)
-          .bindPopup("You are here")
-          .openPopup();
+        // Initialize or Update Marker/Circle
+        if (!markerRef.current) {
+          markerRef.current = L.marker([lat, lng], { icon: userIcon }).addTo(
+            map,
+          );
+          circleRef.current = L.circle([lat, lng], {
+            radius: accuracy,
+            color: "#2563eb",
+            fillOpacity: 0.1,
+          }).addTo(map);
+        } else {
+          markerRef.current.setLatLng([lat, lng]);
+          circleRef.current?.setLatLng([lat, lng]);
+          circleRef.current?.setRadius(accuracy);
+        }
 
-        map.flyTo([latitude, longitude], 15, {
-          duration: 1.5,
-        });
+        // Only fly to location on first detection
+        if (!hasZoomedRef.current) {
+          map.flyTo([lat, lng], 15, { duration: 1.5 });
+          hasZoomedRef.current = true;
+        }
       },
-
-      (error) => {
-        console.log(error.message);
-      },
+      (err) => console.error("Location error:", err.message),
+      { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 },
     );
+
+    return () => {
+      navigator.geolocation.clearWatch(watchId);
+      markerRef.current?.remove();
+      circleRef.current?.remove();
+    };
   }, [map]);
 
   return null;

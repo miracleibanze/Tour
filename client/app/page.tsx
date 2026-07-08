@@ -185,10 +185,10 @@ export default function Home() {
             <span
               className={`text-canva font-extrabold text-xl tracking-tight p-0 m-0`}
             >
-              DHHD
+              TWIVICS
             </span>
             <span className={`text-surface text-xs font-medium`}>
-              Hospitality Platform
+              Rwanda's Tourism Intelligence & Discovery Platform
             </span>
           </div>
         </div>

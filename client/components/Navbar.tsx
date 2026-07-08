@@ -81,7 +81,7 @@ const Navbar = () => {
               <span
                 className={`${scrolled || pathname !== "/" ? "text-primary" : "text-canva"} font-extrabold text-xl tracking-tight p-0 m-0`}
               >
-                DHHD
+                TWIVICS
               </span>
               <span
                 className={`${scrolled || pathname !== "/" ? "text-accent" : "text-surface"} text-xs font-medium`}
