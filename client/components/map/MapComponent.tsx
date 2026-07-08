@@ -13,9 +13,19 @@ import {
   Building2,
   Star,
   Navigation,
+  Utensils,
+  Coffee,
+  Mountain,
+  CalendarDays,
+  Bus,
+  Landmark,
+  LucideIcon,
+  Bookmark,
+  MapPin,
 } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { fetchPins } from "@/store/features/mapSlice";
+import UserLocation from "./UserLocation";
 
 // IMPORTANT: Import your ATTRACTIONS or relevant state
 // import { ATTRACTIONS } from "@/data/data";
@@ -26,21 +36,63 @@ const pinColors: Record<string, string> = {
   city: "#FAD201",
 };
 
+const mapCategories: Record<ExploreTab, { color: string; icon: LucideIcon }> = {
+  all: {
+    color: "bg-[#2563eb]",
+    icon: MapPin,
+  },
+  hotels: {
+    color: "bg-[#2563eb]",
+    icon: Building2,
+  },
+  restaurants: {
+    color: "bg-[#ef4444]",
+    icon: Utensils,
+  },
+  cafes: {
+    color: "bg-[#d97706]",
+    icon: Coffee,
+  },
+  attractions: {
+    color: "bg-[#059669]",
+    icon: Landmark,
+  },
+  events: {
+    color: "bg-[#9333ea]",
+    icon: CalendarDays,
+  },
+  transport: {
+    color: "bg-[#475569]",
+    icon: Bus,
+  },
+};
 // Helper for custom Tailwind icons in Leaflet
-const createCustomIcon = (type: string) => {
+const createCustomIcon = (type: ExploreTab) => {
   const color = pinColors[type] || "#333";
+  const category = mapCategories[type];
+  const Icon = category.icon;
+
   const iconHtml = renderToString(
     <div className="relative group">
       <div
-        className="w-10 h-10 rounded-full border-2 border-white shadow-lg flex items-center justify-center"
-        style={{ backgroundColor: color }}
+        className={`w-10 h-10 rounded-full border-2 border-white shadow-lg flex items-center justify-center ${
+          category.color
+        }`}
       >
-        {type === "park" ? (
-          <TreePine className="w-4 h-4 text-white" />
-        ) : type === "lake" ? (
-          <Waves className="w-4 h-4 text-white" />
+        {type === "hotels" ? (
+          <Icon className="w-4 h-4 text-white" />
+        ) : type === "restaurants" ? (
+          <Icon className="w-4 h-4 text-white" />
+        ) : type === "cafes" ? (
+          <Icon className="w-4 h-4 text-white" />
+        ) : type === "attractions" ? (
+          <Icon className="w-4 h-4 text-white" />
+        ) : type === "events" ? (
+          <Icon className="w-4 h-4 text-white" />
+        ) : type === "transport" ? (
+          <Icon className="w-4 h-4 text-white" />
         ) : (
-          <Building2 className="w-4 h-4 text-white" />
+          <Icon className="w-4 h-4 text-white" />
         )}
       </div>
       <div
@@ -60,14 +112,21 @@ const createCustomIcon = (type: string) => {
 export default function MapPage() {
   const { pins } = useSelector((state: RootState) => state.map);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
-  const [activeLayer, setActiveLayer] = useState("All");
+  const [activeLayer, setActiveLayer] = useState<ExploreTab>("all");
   const dispatch = useAppDispatch();
 
-  const layers = ["All", "Hotels", "Parks", "Restaurants", "Events"];
+  const layers: ExploreTab[] = [
+    "all",
+    "hotels",
+    "restaurants",
+    "cafes",
+    "attractions",
+    "events",
+    "transport",
+  ];
+
   const filteredPins =
-    activeLayer === "All"
-      ? pins
-      : pins.filter((p) => p.type === activeLayer.toLowerCase());
+    activeLayer === "all" ? pins : pins.filter((p) => p.type === activeLayer);
 
   useEffect(() => {
     dispatch(fetchPins());
@@ -76,21 +135,21 @@ export default function MapPage() {
   return (
     <div className="fixed inset-0 pt-16 pb-14 lg:pb-0 flex">
       {/* Sidebar */}
-      <div className="w-80 shrink-0 bg-white border-r border-border flex-col h-full overflow-hidden hidden md:flex z-[1000]">
-        <div className="p-4 border-b border-border">
-          <div className="flex items-center gap-2 bg-muted rounded-xl px-3 py-2.5 mb-3">
-            <Search className="w-4 h-4 text-muted-foreground" />
+      <div className="w-80 shrink-0 bg-white border-r border-secondary/20 flex-col h-full overflow-hidden hidden md:flex z-1000">
+        <div className="p-4 border-b border-secondary/20">
+          <div className="flex items-center gap-2 bg-foreground rounded-xl px-3 py-2.5 mb-3">
+            <Search className="w-4 h-4 text-links" />
             <input
               placeholder="Search on map…"
               className="flex-1 bg-transparent text-sm outline-none"
             />
           </div>
           <div className="flex gap-2 flex-wrap">
-            {layers.map((l) => (
+            {layers.map((l: ExploreTab) => (
               <button
                 key={l}
                 onClick={() => setActiveLayer(l)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors ${activeLayer === l ? "bg-primary text-white" : "bg-muted text-muted-foreground hover:bg-primary/10"}`}
+                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors capitalize ${activeLayer === l ? "bg-primary text-white" : "bg-foreground text-links hover:bg-primary/10"}`}
               >
                 {l}
               </button>
@@ -102,23 +161,17 @@ export default function MapPage() {
             <div
               key={pin.id}
               onClick={() => setSelectedPinId(pin.id)}
-              className={`p-3 rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary/5" : "border-border"}`}
+              className={`p-3 rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex gap-3`}
             >
-              <div className="flex items-center gap-3">
-                <div
-                  className="w-8 h-8 rounded-lg flex items-center justify-center"
-                  style={{
-                    backgroundColor: `${pinColors[pin.type] || "#333"}20`,
-                  }}
-                >
-                  <Building2
-                    className="w-4 h-4"
-                    style={{ color: pinColors[pin.type] }}
-                  />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-sm">{pin.name}</h4>
-                </div>
+              <div className="w-8 h-8 rounded-lg flex items-center justify-center">
+                <img
+                  src={pin.image}
+                  alt="image"
+                  className="w-full h-full object-cover "
+                />
+              </div>
+              <div className="flex-1">
+                <h4 className="font-semibold text-sm">{pin.name}</h4>
               </div>
             </div>
           ))}
@@ -142,11 +195,13 @@ export default function MapPage() {
               eventHandlers={{ click: () => setSelectedPinId(pin.id) }}
             />
           ))}
+
+          <UserLocation />
         </MapContainer>
 
         {/* Overlays (Legend and Labels preserved) */}
-        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl border p-3 z-[500] hidden md:block">
-          <p className="text-xs font-bold font-mono text-muted-foreground uppercase mb-2">
+        <div className="absolute bottom-4 left-4 bg-white/90 backdrop-blur-sm rounded-xl border p-3 z-500 hidden md:block">
+          <p className="text-xs font-bold font-mono text-cta uppercase mb-2">
             Map Legend
           </p>
           {Object.entries(pinColors).map(([type, color]) => (
@@ -155,7 +210,7 @@ export default function MapPage() {
                 className="w-3 h-3 rounded-full"
                 style={{ backgroundColor: color }}
               />
-              <span className="text-xs capitalize">{type}s</span>
+              <span className="text-xs capitalize">{type}</span>
             </div>
           ))}
         </div>

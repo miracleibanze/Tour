@@ -62,7 +62,7 @@ const Navbar = () => {
   return (
     <>
       <header
-        className={`w-full md:flex items-center justify-between z-50 lg:fixed ${pathname === "/" ? "hidden" : "absolute"} top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-transparent"} transition-all duration-300`}
+        className={`w-full md:flex items-center justify-between z-50 md:fixed ${pathname === "/" ? "hidden" : "absolute"} top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-transparent"} transition-all duration-300`}
       >
         <div className="flex items-center justify-between py-1 mx-auto max-w-7xl w-full px-4">
           {/* Brand Logo & Name */}

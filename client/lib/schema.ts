@@ -231,6 +231,7 @@ export const destinations = pgTable("destinations", {
   tagline: varchar("tagline", { length: 255 }).notNull(),
   image: text("image").notNull(),
 
+  location: varchar("location", { length: 255 }).default("Kigali"),
   places: integer("places").default(0),
   // Add these to both tables
   latitude: real("latitude"),

@@ -18,7 +18,7 @@ export async function GET() {
       restaurantsData,
       cafesData,
       attractionsData,
-      EventsData,
+      eventsData,
       transportData,
       destinationsData,
     ] = await Promise.all([
@@ -28,17 +28,22 @@ export async function GET() {
           name: hotels.name,
           lat: hotels.latitude,
           lng: hotels.longitude,
-          type: sql`'hotel'`,
+          location: hotels.location,
+          image: hotels.image,
+          type: sql`'hotels'`,
         })
         .from(hotels)
         .where(and(isNotNull(hotels.latitude), isNotNull(hotels.longitude))),
+
       db
         .select({
           id: restaurants.id,
           name: restaurants.name,
           lat: restaurants.latitude,
           lng: restaurants.longitude,
-          type: sql`'restaurant'`,
+          location: restaurants.location,
+          image: restaurants.image,
+          type: sql`'restaurants'`,
         })
         .from(restaurants)
         .where(
@@ -47,23 +52,29 @@ export async function GET() {
             isNotNull(restaurants.longitude),
           ),
         ),
+
       db
         .select({
           id: cafes.id,
           name: cafes.name,
           lat: cafes.latitude,
           lng: cafes.longitude,
-          type: sql`'cafe'`,
+          location: cafes.location,
+          image: cafes.image,
+          type: sql`'cafes'`,
         })
         .from(cafes)
         .where(and(isNotNull(cafes.latitude), isNotNull(cafes.longitude))),
+
       db
         .select({
           id: attractions.id,
           name: attractions.name,
           lat: attractions.latitude,
           lng: attractions.longitude,
-          type: sql`'cafe'`,
+          location: attractions.location,
+          image: attractions.image,
+          type: sql`'attractions'`,
         })
         .from(attractions)
         .where(
@@ -72,35 +83,44 @@ export async function GET() {
             isNotNull(attractions.longitude),
           ),
         ),
+
       db
         .select({
           id: events.id,
           name: events.name,
           lat: events.latitude,
           lng: events.longitude,
-          type: sql`'cafe'`,
+          location: events.location,
+          image: events.image,
+          type: sql`'events'`,
         })
         .from(events)
         .where(and(isNotNull(events.latitude), isNotNull(events.longitude))),
+
       db
         .select({
           id: transport.id,
           name: transport.name,
           lat: transport.latitude,
           lng: transport.longitude,
-          type: sql`'cafe'`,
+          location: transport.location,
+          image: transport.image,
+          type: sql`'transport'`,
         })
         .from(transport)
         .where(
           and(isNotNull(transport.latitude), isNotNull(transport.longitude)),
         ),
+
       db
         .select({
           id: destinations.id,
           name: destinations.name,
           lat: destinations.latitude,
           lng: destinations.longitude,
-          type: sql`'cafe'`,
+          location: destinations.location,
+          image: destinations.image,
+          type: sql`'destinations'`,
         })
         .from(destinations)
         .where(
@@ -116,11 +136,13 @@ export async function GET() {
       ...restaurantsData,
       ...cafesData,
       ...attractionsData,
-      ...EventsData,
+      ...eventsData,
       ...transportData,
       ...destinationsData,
     ]);
   } catch (error) {
+    console.error("Map pins fetch error:", error);
+
     return NextResponse.json(
       { error: "Failed to fetch pins" },
       { status: 500 },

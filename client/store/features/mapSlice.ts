@@ -5,7 +5,9 @@ export interface Pin {
   name: string;
   lat: number;
   lng: number;
-  type: string;
+  image: string;
+  location: string;
+  type: Exclude<"all", ExploreTab>;
 }
 
 export const fetchPins = createAsyncThunk("map/fetchPins", async () => {
