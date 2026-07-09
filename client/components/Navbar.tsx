@@ -148,7 +148,7 @@ const MobileNavbar = () => {
 
   return (
     <nav className="fixed lg:hidden bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-black/10 shadow-lg">
-      <div className="flex items-center justify-between px-2 py-2">
+      <div className="flex items-center justify-between px-2 py-1">
         {items.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;

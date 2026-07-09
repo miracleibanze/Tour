@@ -4,115 +4,22 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import L from "leaflet";
-import { renderToString } from "react-dom/server";
-import {
-  Search,
-  TreePine,
-  Waves,
-  Building2,
-  Star,
-  Navigation,
-  Utensils,
-  Coffee,
-  Mountain,
-  CalendarDays,
-  Bus,
-  Landmark,
-  LucideIcon,
-  Bookmark,
-  MapPin,
-} from "lucide-react";
+import { ChevronDown, ChevronUp, Menu, Search } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { fetchPins } from "@/store/features/mapSlice";
-import UserLocation from "./UserLocation";
-
-// IMPORTANT: Import your ATTRACTIONS or relevant state
-// import { ATTRACTIONS } from "@/data/data";
-
-const pinColors: Record<string, string> = {
-  park: "#20603D",
-  lake: "#00A1DE",
-  city: "#FAD201",
-};
-
-const mapCategories: Record<ExploreTab, { color: string; icon: LucideIcon }> = {
-  all: {
-    color: "bg-[#2563eb]",
-    icon: MapPin,
-  },
-  hotels: {
-    color: "bg-[#2563eb]",
-    icon: Building2,
-  },
-  restaurants: {
-    color: "bg-[#ef4444]",
-    icon: Utensils,
-  },
-  cafes: {
-    color: "bg-[#d97706]",
-    icon: Coffee,
-  },
-  attractions: {
-    color: "bg-[#059669]",
-    icon: Landmark,
-  },
-  events: {
-    color: "bg-[#9333ea]",
-    icon: CalendarDays,
-  },
-  transport: {
-    color: "bg-[#475569]",
-    icon: Bus,
-  },
-};
-// Helper for custom Tailwind icons in Leaflet
-const createCustomIcon = (type: ExploreTab) => {
-  const color = pinColors[type] || "#333";
-  const category = mapCategories[type];
-  const Icon = category.icon;
-
-  const iconHtml = renderToString(
-    <div className="relative group">
-      <div
-        className={`w-10 h-10 rounded-full border-2 border-white shadow-lg flex items-center justify-center ${
-          category.color
-        }`}
-      >
-        {type === "hotels" ? (
-          <Icon className="w-4 h-4 text-white" />
-        ) : type === "restaurants" ? (
-          <Icon className="w-4 h-4 text-white" />
-        ) : type === "cafes" ? (
-          <Icon className="w-4 h-4 text-white" />
-        ) : type === "attractions" ? (
-          <Icon className="w-4 h-4 text-white" />
-        ) : type === "events" ? (
-          <Icon className="w-4 h-4 text-white" />
-        ) : type === "transport" ? (
-          <Icon className="w-4 h-4 text-white" />
-        ) : (
-          <Icon className="w-4 h-4 text-white" />
-        )}
-      </div>
-      <div
-        className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 rotate-45"
-        style={{ backgroundColor: color }}
-      />
-    </div>,
-  );
-  return L.divIcon({
-    html: iconHtml,
-    className: "custom-pin",
-    iconSize: [40, 48],
-    iconAnchor: [20, 48],
-  });
-};
+import {
+  SelectedPlace,
+  createCustomIcon,
+  createThumbnailIcon,
+  pinColors,
+} from "./MapFeatures";
+import { MapFocus, UserLocation } from "./MapFocus";
 
 export default function MapPage() {
   const { pins } = useSelector((state: RootState) => state.map);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<ExploreTab>("all");
+  const [mobileOpen, setMobileOpen] = useState(true);
   const [userLocation, setUserLocation] = useState<{
     lat: number;
     lng: number;
@@ -129,12 +36,23 @@ export default function MapPage() {
     "transport",
   ];
 
-  const filteredPins =
-    activeLayer === "all" ? pins : pins.filter((p) => p.type === activeLayer);
+  // const filteredPins =
+  //   activeLayer === "all" ? pins : pins.filter((p) => p.type === activeLayer);
+  const filteredPins = pins
+    .filter((p) => activeLayer === "all" || p.type === activeLayer)
+    .sort((a, b) => (a.distance ?? Infinity) - (b.distance ?? Infinity));
+
+  const selectedPin = filteredPins.find((pin) => pin.id === selectedPinId);
 
   useEffect(() => {
-    dispatch(fetchPins());
-  }, [dispatch]);
+    if (userLocation)
+      dispatch(
+        fetchPins({
+          lat: userLocation.lat,
+          lng: userLocation.lng,
+        }),
+      );
+  }, [dispatch, userLocation]);
 
   function getDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
     const R = 6371; // Earth's radius in km
@@ -155,63 +73,76 @@ export default function MapPage() {
     return Math.round(R * c);
   }
 
+  useEffect(() => {
+    setMobileOpen(true);
+  }, [activeLayer]);
   return (
     <div className="fixed inset-0 pt-16 pb-14 lg:pb-0 flex">
-      {/* Sidebar */}
       <div className="w-80 shrink-0 bg-white border-r border-secondary/20 flex-col h-full overflow-hidden hidden md:flex z-1000">
-        <div className="p-4 border-b border-secondary/20">
-          <div className="flex items-center gap-2 bg-foreground rounded-xl px-3 py-2.5 mb-3">
-            <Search className="w-4 h-4 text-links" />
-            <input
-              placeholder="Search on map…"
-              className="flex-1 bg-transparent text-sm outline-none"
-            />
-          </div>
-          <div className="flex gap-2 flex-wrap">
-            {layers.map((l: ExploreTab) => (
-              <button
-                key={l}
-                onClick={() => setActiveLayer(l)}
-                className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors capitalize ${activeLayer === l ? "bg-primary text-white" : "bg-foreground text-links hover:bg-primary/10"}`}
-              >
-                {l}
-              </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex-1 overflow-y-auto p-4 space-y-3">
-          {filteredPins.map((pin) => {
-            const distance = userLocation
-              ? getDistance(
-                  pin.lat,
-                  pin.lng,
-                  userLocation?.lat,
-                  userLocation?.lng,
-                )
-              : null;
-            return (
-              <div
-                key={pin.id}
-                onClick={() => setSelectedPinId(pin.id)}
-                className={`p-3 rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex gap-3`}
-              >
-                <div className="w-8 h-8 rounded-lg flex items-center justify-center">
-                  <img
-                    src={pin.image}
-                    alt="image"
-                    className="w-full h-full object-cover "
-                  />
-                </div>
-                <div className="flex-1">
-                  <h4 className="font-semibold text-sm">{pin.name}</h4>
-                  <p className="italic text-sm">
-                    {pin.location + " " + (distance ? `(${distance}m)` : "")}
-                  </p>
-                </div>
+        {!selectedPin ? (
+          <>
+            <div className="p-4 border-b border-secondary/20">
+              <div className="flex items-center gap-2 bg-foreground rounded-xl px-3 py-2.5 mb-3">
+                <Search className="w-4 h-4 text-links" />
+                <input
+                  placeholder="Search on map…"
+                  className="flex-1 bg-transparent text-sm outline-none"
+                />
               </div>
-            );
-          })}
-        </div>
+              <div className="flex gap-2 flex-wrap">
+                {layers.map((l: ExploreTab) => (
+                  <button
+                    key={l}
+                    onClick={() => {
+                      setActiveLayer(l);
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-xs font-semibold transition-colors capitalize ${activeLayer === l ? "bg-primary text-white" : "bg-foreground text-links hover:bg-primary/10"}`}
+                  >
+                    {l === "all" ? "Suggested" : l}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto p-4 space-y-3">
+              {filteredPins.map((pin) => {
+                const distance = userLocation
+                  ? getDistance(
+                      pin.lat,
+                      pin.lng,
+                      userLocation?.lat,
+                      userLocation?.lng,
+                    )
+                  : null;
+                return (
+                  <div
+                    key={pin.id}
+                    onClick={() => setSelectedPinId(pin.id)}
+                    className={`h-14 overflow-hidden rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex items-center gap-3`}
+                  >
+                    <img
+                      src={pin.image}
+                      alt="image"
+                      className="h-full aspect-square object-cover "
+                    />
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-sm">{pin.name}</h4>
+                      <p className="italic text-[12px] text-secondary">
+                        {pin.location +
+                          " " +
+                          (distance ? `(${distance}km)` : "")}
+                      </p>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <SelectedPlace
+            pin={selectedPin}
+            back={() => setSelectedPinId(null)}
+          />
+        )}
       </div>
 
       {/* Map Area */}
@@ -227,10 +158,20 @@ export default function MapPage() {
             <Marker
               key={pin.id}
               position={[pin.lat, pin.lng]}
-              icon={createCustomIcon(pin.type)}
-              eventHandlers={{ click: () => setSelectedPinId(pin.id) }}
+              icon={
+                selectedPinId === pin.id
+                  ? createThumbnailIcon(pin.image)
+                  : createCustomIcon(pin.type)
+              }
+              eventHandlers={{
+                click: () => setSelectedPinId(pin.id),
+              }}
             />
           ))}
+
+          <MapFocus
+            position={selectedPin ? [selectedPin.lat, selectedPin.lng] : null}
+          />
 
           <UserLocation
             onLocationFound={(location) => {
@@ -257,6 +198,119 @@ export default function MapPage() {
 
         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white/10 text-8xl font-bold pointer-events-none select-none">
           RWANDA
+        </div>
+      </div>
+
+      <div
+        className={`md:hidden absolute top-12 left-0 right-0 z-1000 border-b border-secondary/20 flex flex-col ${mobileOpen ? "bottom-12" : "max-h-max"} ${selectedPin ? "bottom-15 flex-col-reverse" : ""}`}
+      >
+        {!selectedPin ? (
+          <>
+            <div className="p-4 border-b border-secondary/20 bg-canva">
+              <div className="flex items-center gap-2 mb-3">
+                <div className="flex items-center gap-2 bg-foreground rounded-xl px-3 py-2.5 flex-1">
+                  <Search className="w-4 h-4 text-links" />
+
+                  <input
+                    placeholder="Search on map..."
+                    className="
+                flex-1
+                bg-transparent
+                text-sm
+                outline-none
+              "
+                  />
+                </div>
+
+                <button className=" w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center">
+                  <Menu className="w-5 h-5" />
+                </button>
+              </div>
+
+              {/* Categories */}
+              <div className="flex gap-2 overflow-x-auto scrollbar-hide">
+                {layers.map((l) => (
+                  <button
+                    key={l}
+                    onClick={() => setActiveLayer(l)}
+                    className={` whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-semibold capitalize ${
+                      activeLayer === l
+                        ? "bg-primary text-white"
+                        : "bg-foreground text-links"
+                    }`}
+                  >
+                    {l === "all" ? "Suggested" : l}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {mobileOpen && (
+              <div className=" p-4 space-y-3 overflow-y-scroll flex-1 max-h-[40vh] bg-canva">
+                {!selectedPin &&
+                  filteredPins.map((pin) => {
+                    const distance = userLocation
+                      ? getDistance(
+                          pin.lat,
+                          pin.lng,
+                          userLocation.lat,
+                          userLocation.lng,
+                        )
+                      : null;
+
+                    return (
+                      <div
+                        key={pin.id}
+                        onClick={() => setSelectedPinId(pin.id)}
+                        className=" h-14 rounded-xl border border-secondary/20 flex items-center gap-3 overflow-hidden cursor-pointer hover:bg-foreground
+              "
+                      >
+                        <img
+                          src={pin.image}
+                          alt={pin.name}
+                          className=" h-full aspect-square object-cover"
+                        />
+
+                        <div className="flex-1 min-w-0">
+                          <h4 className="font-semibold text-sm truncate">
+                            {pin.name}
+                          </h4>
+
+                          <p className="text-xs text-secondary truncate">
+                            {pin.location}
+                            {distance && ` • ${distance} km`}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
+          </>
+        ) : (
+          <div className="max-h-[50vh] overflow-y-auto mt-auto rounded-t-3xl overflow-hidden">
+            <SelectedPlace
+              pin={selectedPin}
+              back={() => {
+                setSelectedPinId(null);
+                setMobileOpen(false);
+              }}
+              smallerScreen={true}
+            />
+          </div>
+        )}
+        <div
+          className={`w-full ${mobileOpen || selectedPin ? "flex-1" : "h-0"} bg-primary`}
+          onClick={() => {
+            setMobileOpen((v) => !v);
+            setSelectedPinId(null);
+          }}
+        >
+          {!selectedPin && (
+            <div className="w-24 border border-secondary/50 border-t-0 mx-auto bg-canva flex items-center justify-center rounded-b-2xl">
+              {mobileOpen ? <ChevronUp /> : <ChevronDown />}
+            </div>
+          )}
         </div>
       </div>
     </div>

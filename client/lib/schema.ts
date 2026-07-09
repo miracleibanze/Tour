@@ -168,6 +168,7 @@ export const events = pgTable("events", {
   rating: real("rating").default(0),
   reviews: integer("reviews").default(0),
 
+  featured: boolean("featured").default(false),
   price: varchar("price", { length: 50 }),
 
   location: varchar("location", { length: 255 }),
@@ -175,12 +176,14 @@ export const events = pgTable("events", {
   category: varchar("category", { length: 100 }),
 
   date: varchar("date", { length: 100 }).notNull(),
+  tags: text("tags").array(),
 
   description: text("description"),
 
   performance: text("performance"), // JSON string
 
   writtenReviews: jsonb("written_reviews").$type<WrittenReview[]>().default([]),
+  workingHours: jsonb("working_hours").$type<Workinghours>().default([]),
   contact: jsonb("contact").$type<Contacts>(),
   // Add these to both tables
   latitude: real("latitude"),

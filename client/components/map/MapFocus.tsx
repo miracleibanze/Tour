@@ -1,14 +1,33 @@
 "use client";
 
-import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
+import type { LatLngExpression } from "leaflet";
+import { useEffect, useRef } from "react";
 import L from "leaflet";
+
+interface MapFocusProps {
+  position: LatLngExpression | null;
+}
+
+export function MapFocus({ position }: MapFocusProps) {
+  const map = useMap();
+
+  useEffect(() => {
+    if (!position) return;
+
+    map.flyTo(position, 16, {
+      duration: 1.2,
+    });
+  }, [position, map]);
+
+  return null;
+}
 
 interface UserLocationProps {
   onLocationFound?: (location: { lat: number; lng: number }) => void;
 }
 
-export default function UserLocation({ onLocationFound }: UserLocationProps) {
+export function UserLocation({ onLocationFound }: UserLocationProps) {
   const map = useMap();
   const markerRef = useRef<L.Marker | null>(null);
   const circleRef = useRef<L.Circle | null>(null);

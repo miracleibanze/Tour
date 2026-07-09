@@ -33,7 +33,8 @@ export async function GET() {
           type: sql`'hotels'`,
         })
         .from(hotels)
-        .where(and(isNotNull(hotels.latitude), isNotNull(hotels.longitude))),
+        .where(and(isNotNull(hotels.latitude), isNotNull(hotels.longitude)))
+        .limit(3),
 
       db
         .select({
@@ -51,7 +52,8 @@ export async function GET() {
             isNotNull(restaurants.latitude),
             isNotNull(restaurants.longitude),
           ),
-        ),
+        )
+        .limit(3),
 
       db
         .select({
@@ -64,7 +66,8 @@ export async function GET() {
           type: sql`'cafes'`,
         })
         .from(cafes)
-        .where(and(isNotNull(cafes.latitude), isNotNull(cafes.longitude))),
+        .where(and(isNotNull(cafes.latitude), isNotNull(cafes.longitude)))
+        .limit(3),
 
       db
         .select({
@@ -82,7 +85,8 @@ export async function GET() {
             isNotNull(attractions.latitude),
             isNotNull(attractions.longitude),
           ),
-        ),
+        )
+        .limit(3),
 
       db
         .select({
@@ -95,7 +99,8 @@ export async function GET() {
           type: sql`'events'`,
         })
         .from(events)
-        .where(and(isNotNull(events.latitude), isNotNull(events.longitude))),
+        .where(and(isNotNull(events.latitude), isNotNull(events.longitude)))
+        .limit(3),
 
       db
         .select({
@@ -110,7 +115,8 @@ export async function GET() {
         .from(transport)
         .where(
           and(isNotNull(transport.latitude), isNotNull(transport.longitude)),
-        ),
+        )
+        .limit(3),
 
       db
         .select({
@@ -128,7 +134,8 @@ export async function GET() {
             isNotNull(destinations.latitude),
             isNotNull(destinations.longitude),
           ),
-        ),
+        )
+        .limit(3),
     ]);
 
     return NextResponse.json([
