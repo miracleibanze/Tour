@@ -18,6 +18,7 @@ import {
 import { StarRating, Tag } from "@/components/Reusables";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { FC, useEffect, useState } from "react";
+import Link from "next/link";
 
 const EntityDetails: FC<{ place: DetailedPlace }> = ({ place }) => {
   const searchParams = useSearchParams();
@@ -301,24 +302,22 @@ const EntityDetails: FC<{ place: DetailedPlace }> = ({ place }) => {
                 <div className="space-y-3">
                   {nearbyAttractions.length > 0 ? (
                     nearbyAttractions.map((a) => (
-                      <div
-                        key={a.id}
-                        onClick={() => router.push(`/attractions/${a.id}`)}
-                        className="flex items-center gap-3 group cursor-pointer hover:bg-secondary/10 rounded-md"
-                      >
-                        <img
-                          src={a.image}
-                          className="w-12 h-10 rounded-lg object-cover shrink-0 bg-secondary"
-                        />
-                        <div className="flex-1 min-w-0">
-                          <div className="text-xs font-semibold text-primary truncate group-hover:underline">
-                            {a.name}
-                          </div>
-                          <div className="text-xs text-secondary">
-                            {a.location}
+                      <Link href={`/attractions/${a.id}`} key={a.id}>
+                        <div className="flex items-center gap-3 group cursor-pointer hover:bg-secondary/10 rounded-md">
+                          <img
+                            src={a.image}
+                            className="w-12 h-10 rounded-lg object-cover shrink-0 bg-secondary"
+                          />
+                          <div className="flex-1 min-w-0">
+                            <div className="text-xs font-semibold text-primary truncate group-hover:underline">
+                              {a.name}
+                            </div>
+                            <div className="text-xs text-secondary">
+                              {a.location}
+                            </div>
                           </div>
                         </div>
-                      </div>
+                      </Link>
                     ))
                   ) : (
                     <p className="py-6 px-4 text-center text-secondary">

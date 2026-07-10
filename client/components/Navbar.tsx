@@ -16,6 +16,7 @@ import logo from "@/public/logo.png";
 import { usePathname, useRouter } from "next/navigation";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 const Navbar = () => {
   const pathname = usePathname();
@@ -62,45 +63,43 @@ const Navbar = () => {
   return (
     <>
       <header
-        className={`w-full md:flex items-center justify-between z-50 md:fixed ${pathname === "/" ? "hidden" : "absolute"} top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-transparent"} transition-all duration-300`}
+        className={`w-full md:flex items-center justify-between z-9999 md:fixed ${pathname === "/" ? "hidden" : "absolute"} top-0 right-0 left-0 ${scrolled || pathname !== "/" ? "bg-white/95 backdrop-blur-md shadow-sm" : "bg-transparent"} transition-all duration-300`}
       >
         <div className="flex items-center justify-between py-1 mx-auto max-w-7xl w-full px-4">
-          {/* Brand Logo & Name */}
-          <div
-            className="flex items-center cursor-pointer"
-            onClick={() => router.push("/")}
-          >
-            <Image
-              src={logo}
-              alt="logo"
-              className={`w-14 h-14 flex items-center justify-center -m-1 object-center`}
-            />
-            <div
-              className={`flex flex-col leading-tight pl-2 justify-center border-l ${scrolled || pathname !== "/" ? "border-primary" : "border-canva"}`}
-            >
-              <span
-                className={`${scrolled || pathname !== "/" ? "text-primary" : "text-canva"} font-extrabold text-xl tracking-tight p-0 m-0`}
+          <Link href={"/"}>
+            <div className="flex items-center cursor-pointer">
+              <Image
+                src={logo}
+                alt="logo"
+                className={`w-14 h-14 flex items-center justify-center -m-1 object-center`}
+              />
+              <div
+                className={`flex flex-col leading-tight pl-2 justify-center border-l ${scrolled || pathname !== "/" ? "border-primary" : "border-canva"}`}
               >
-                TWIVICS
-              </span>
-              <span
-                className={`${scrolled || pathname !== "/" ? "text-accent" : "text-surface"} text-xs font-medium`}
-              >
-                Hospitality Platform
-              </span>
+                <span
+                  className={`${scrolled || pathname !== "/" ? "text-primary" : "text-canva"} font-extrabold text-xl tracking-tight p-0 m-0`}
+                >
+                  TWIVICS
+                </span>
+                <span
+                  className={`${scrolled || pathname !== "/" ? "text-accent" : "text-surface"} text-xs font-medium`}
+                >
+                  Hospitality Platform
+                </span>
+              </div>
             </div>
-          </div>
+          </Link>
 
           {/* Navigation Links with Hover/Click Dropdown Menus */}
           <nav className="hidden lg:flex items-center gap-1">
             {menuCategories.map(({ label, page, active, home }) => (
-              <button
-                key={page}
-                onClick={() => router.push(page)}
-                className={`px-3 py-2 rounded-lg text-sm ${scrolled || pathname !== "/" ? "text-primary" : "text-canva"} font-medium transition-colors ${active ? "custom_underline" : ""} hover:bg-secondary/20 cursor-pointer`}
-              >
-                {label}
-              </button>
+              <Link href={home ? "/" : page} key={page}>
+                <button
+                  className={`px-3 py-2 rounded-lg text-sm ${scrolled || pathname !== "/" ? "text-primary" : "text-canva"} font-medium transition-colors ${active ? "custom_underline" : ""} hover:bg-secondary/20 cursor-pointer`}
+                >
+                  {label}
+                </button>
+              </Link>
             ))}
           </nav>
 
@@ -147,36 +146,34 @@ const MobileNavbar = () => {
   ];
 
   return (
-    <nav className="fixed lg:hidden bottom-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-t border-black/10 shadow-lg">
+    <nav className="fixed lg:hidden bottom-0 left-0 right-0 z-9999 bg-white/80 backdrop-blur-xl border-t border-black/10 shadow-lg">
       <div className="flex items-center justify-between px-2 py-1">
         {items.map((item) => {
           const Icon = item.icon;
           const active = pathname === item.href;
 
           return (
-            <button
-              key={item.name}
-              onClick={() => router.push(item.href)}
-              className="flex flex-col items-center justify-center gap-1 flex-1"
-            >
-              <div
-                className={`p-2 rounded-xl transition-all ${
-                  active
-                    ? "bg-[#1E2B14] text-white scale-110"
-                    : "text-[#1E2B14]/70"
-                }`}
-              >
-                <Icon className="w-5 h-5" />
-              </div>
+            <Link href={item.href} key={item.name}>
+              <button className="flex flex-col items-center justify-center gap-1 flex-1">
+                <div
+                  className={`p-2 rounded-xl transition-all ${
+                    active
+                      ? "bg-[#1E2B14] text-white scale-110"
+                      : "text-[#1E2B14]/70"
+                  }`}
+                >
+                  <Icon className="w-5 h-5" />
+                </div>
 
-              <span
-                className={`text-[10px] font-semibold ${
-                  active ? "text-[#1E2B14]" : "text-gray-500"
-                }`}
-              >
-                {item.name}
-              </span>
-            </button>
+                <span
+                  className={`text-[10px] font-semibold ${
+                    active ? "text-[#1E2B14]" : "text-gray-500"
+                  }`}
+                >
+                  {item.name}
+                </span>
+              </button>
+            </Link>
           );
         })}
       </div>

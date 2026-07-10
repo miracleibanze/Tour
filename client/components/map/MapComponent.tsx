@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, useMap } from "react-leaflet";
 import { useSelector } from "react-redux";
 import { RootState } from "@/store/store";
-import { ChevronDown, ChevronUp, Menu, Search } from "lucide-react";
+import { ChevronDown, ChevronUp, Loader, Menu, Search } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { fetchPins } from "@/store/features/mapSlice";
 import {
@@ -16,7 +16,7 @@ import {
 import { MapFocus, UserLocation } from "./MapFocus";
 
 export default function MapPage() {
-  const { pins } = useSelector((state: RootState) => state.map);
+  const { pins, loading } = useSelector((state: RootState) => state.map);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<ExploreTab>("all");
   const [mobileOpen, setMobileOpen] = useState(true);
@@ -76,6 +76,7 @@ export default function MapPage() {
   useEffect(() => {
     setMobileOpen(true);
   }, [activeLayer]);
+
   return (
     <div className="fixed inset-0 pt-16 pb-14 lg:pb-0 flex">
       <div className="w-80 shrink-0 bg-white border-r border-secondary/20 flex-col h-full overflow-hidden hidden md:flex z-1000">
@@ -103,38 +104,49 @@ export default function MapPage() {
                 ))}
               </div>
             </div>
+
             <div className="flex-1 overflow-y-auto p-4 space-y-3">
-              {filteredPins.map((pin) => {
-                const distance = userLocation
-                  ? getDistance(
-                      pin.lat,
-                      pin.lng,
-                      userLocation?.lat,
-                      userLocation?.lng,
-                    )
-                  : null;
-                return (
-                  <div
-                    key={pin.id}
-                    onClick={() => setSelectedPinId(pin.id)}
-                    className={`h-14 overflow-hidden rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex items-center gap-3`}
-                  >
-                    <img
-                      src={pin.image}
-                      alt="image"
-                      className="h-full aspect-square object-cover "
-                    />
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-sm">{pin.name}</h4>
-                      <p className="italic text-[12px] text-secondary">
-                        {pin.location +
-                          " " +
-                          (distance ? `(${distance}km)` : "")}
-                      </p>
+              {loading ? (
+                <p className="text-sm text-secondary/50 font-semibold py-16 text-center h-full flex items-center justify-center">
+                  <Loader />
+                </p>
+              ) : filteredPins.length > 0 ? (
+                filteredPins.map((pin) => {
+                  const distance = userLocation
+                    ? getDistance(
+                        pin.lat,
+                        pin.lng,
+                        userLocation?.lat,
+                        userLocation?.lng,
+                      )
+                    : null;
+                  return (
+                    <div
+                      key={pin.id}
+                      onClick={() => setSelectedPinId(pin.id)}
+                      className={`h-14 overflow-hidden rounded-xl border cursor-pointer ${selectedPinId === pin.id ? "border-primary bg-primary text-canva" : "border-secondary/20 hover:bg-foreground"} flex items-center gap-3`}
+                    >
+                      <img
+                        src={pin.image}
+                        alt="image"
+                        className="h-full aspect-square object-cover "
+                      />
+                      <div className="flex-1">
+                        <h4 className="font-semibold text-sm">{pin.name}</h4>
+                        <p className="italic text-[12px] text-secondary">
+                          {pin.location +
+                            " " +
+                            (distance ? `(${distance}km)` : "")}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                );
-              })}
+                  );
+                })
+              ) : (
+                <p className="text-sm text-secondary/50 font-semibold py-16 text-center">
+                  No place found, Try again later!
+                </p>
+              )}
             </div>
           </>
         ) : (

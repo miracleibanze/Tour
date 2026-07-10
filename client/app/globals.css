@@ -103,4 +103,5 @@
 
 button {
   cursor: pointer;
+  white-space: nowrap;
 }

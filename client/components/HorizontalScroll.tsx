@@ -9,7 +9,7 @@ export const HorizontalScroll: FC<{
   loading: boolean;
   items: Place[];
   tab: string;
-  onSeeAll: () => void;
+  onSeeAll: string;
 }> = ({ title, subtitle, loading, items, tab, onSeeAll }) => {
   const ref = useRef<HTMLDivElement>(null);
   const scroll = (dir: "left" | "right") => {
@@ -22,8 +22,8 @@ export const HorizontalScroll: FC<{
   return (
     <section className="py-12 bg-foreground">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-end justify-between mb-6 flex-wrap">
-          <div className="flex-1">
+        <div className="flex items-end justify-between mb-6 gap-4 flex-wrap">
+          <div className="shrink-0 sm:min-w-md">
             <h2
               className="text-3xl font-bold text-primary"
               style={{ fontFamily: "'Playfair Display', serif" }}
@@ -45,12 +45,11 @@ export const HorizontalScroll: FC<{
             >
               <ChevronRight className="w-4 h-4 text-primary" />
             </button>
-            <button
-              onClick={onSeeAll}
-              className="flex items-center gap-1 text-primary text-sm font-semibold ml-2 hover:gap-2 transition-all"
-            >
-              See all <ChevronRight className="w-4 h-4" />
-            </button>
+            <Link href={onSeeAll}>
+              <button className="flex items-center gap-1 text-primary text-sm font-semibold ml-2 hover:gap-2 transition-all">
+                See all <ChevronRight className="w-4 h-4" />
+              </button>
+            </Link>
           </div>
         </div>
         <div

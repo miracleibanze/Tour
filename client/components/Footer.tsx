@@ -4,6 +4,7 @@ import { Flag, Globe, Mail, Phone } from "lucide-react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import logo from "@/public/logo.png";
+import Link from "next/link";
 
 const Footer = () => {
   const router = useRouter();
@@ -66,18 +67,15 @@ const Footer = () => {
               <h4 className="font-bold text-white text-sm mb-4 font-mono uppercase tracking-wide">
                 {title}
               </h4>
-              <ul className="space-y-2">
+              <div className="space-y-2">
                 {links.map((link) => (
-                  <li key={link}>
-                    <button
-                      onClick={() => router.push("/explore")}
-                      className="text-white/60 hover:text-white text-sm transition-colors text-left"
-                    >
+                  <Link key={link} href={"/explore"}>
+                    <button className="text-white/60 hover:text-white text-sm transition-colors text-left">
                       {link}
                     </button>
-                  </li>
+                  </Link>
                 ))}
-              </ul>
+              </div>
             </div>
           ))}
         </div>

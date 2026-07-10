@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 
 export interface Pin {
   id: string;
@@ -41,9 +41,7 @@ export const fetchPins = createAsyncThunk(
 
     const pins: Pin[] = await response.json();
 
-    if (!userLocation) {
-      return pins;
-    }
+    if (!userLocation) return pins;
 
     return pins.map((pin) => ({
       ...pin,
@@ -57,15 +55,32 @@ export const fetchPins = createAsyncThunk(
   },
 );
 
+interface MapState {
+  pins: Pin[];
+  loading: boolean;
+}
+
+const initialState: MapState = {
+  pins: [],
+  loading: true,
+};
+
 const mapSlice = createSlice({
   name: "map",
-  initialState: { pins: [] as Pin[], status: "idle" },
+  initialState,
   reducers: {},
   extraReducers: (builder) => {
-    builder.addCase(fetchPins.fulfilled, (state, action) => {
-      state.pins = action.payload;
-      state.status = "succeeded";
-    });
+    builder
+      .addCase(fetchPins.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchPins.fulfilled, (state, action) => {
+        state.pins = action.payload;
+        state.loading = false;
+      })
+      .addCase(fetchPins.rejected, (state) => {
+        state.loading = false;
+      });
   },
 });
 

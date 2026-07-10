@@ -32,12 +32,14 @@ import { Suspense, useEffect, useMemo, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchAll } from "@/store/features/allSlice";
 import { fetchSearch } from "@/store/features/searchSlice";
+import { useTopLoader } from "nextjs-toploader";
 
 function ExplorePageContent() {
   const dispatch = useAppDispatch();
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const loader = useTopLoader();
 
   const [viewMode, setViewMode] = useState<ViewMode>("grid");
   const [searchQuery, setSearchQuery] = useState("");
@@ -70,6 +72,8 @@ function ExplorePageContent() {
     const params = new URLSearchParams(searchParams.toString());
 
     params.set("tab", tab);
+
+    loader.start();
 
     router.push(`${pathname}?${params.toString()}`);
   };
@@ -152,6 +156,8 @@ function ExplorePageContent() {
 
     params.delete("page");
 
+    loader.start();
+    
     router.push(`${pathname}?${params.toString()}`);
     setPage(1);
   };

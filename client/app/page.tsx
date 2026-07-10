@@ -37,10 +37,12 @@ import { fetchEvents } from "@/store/features/eventsSlice";
 import { fetchTestimonials } from "@/store/features/testimonialsSlice";
 import Footer from "@/components/Footer";
 import Link from "next/link";
+import { useTopLoader } from "nextjs-toploader";
 
 export default function Home() {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const loader = useTopLoader();
 
   const [liveData, setLiveData] = useState({
     annualVisitors: null as number | null,
@@ -99,11 +101,15 @@ export default function Home() {
 
   const handleSearch = () => {
     if (!query.trim()) return;
-    if (selectedTab === "")
-      return router.push(`/explore?q=${encodeURIComponent(query.trim())}`);
-    return router.push(
-      `/explore?q=${encodeURIComponent(query.trim())}&tab=${selectedTab}`,
-    );
+
+    loader.start();
+
+    const url =
+      selectedTab === ""
+        ? `/explore?q=${encodeURIComponent(query.trim())}`
+        : `/explore?q=${encodeURIComponent(query.trim())}&tab=${selectedTab}`;
+
+    router.push(url);
   };
 
   const analyticsData = [
@@ -202,12 +208,11 @@ export default function Home() {
         </p>
 
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => router.push("/explore")}
-            className="bg-links hover:bg-accent text-white font-bold px-6 py-3.5 rounded-xl text-sm shadow-md transition-all"
-          >
-            Explore Now
-          </button>
+          <Link href={"/explore"}>
+            <button className="bg-links hover:bg-accent text-white font-bold px-6 py-3.5 rounded-xl text-sm shadow-md transition-all">
+              Explore Now
+            </button>
+          </Link>
           <button className="flex items-center gap-2 bg-white/20 hover:bg-white/60 backdrop-blur-sm text-canva font-bold px-5 py-3 rounded-full text-sm border border-primary/30 transition-all">
             <div className="w-6 h-6 rounded-full bg-white flex items-center justify-center shadow-sm">
               <Play className="w-3 h-3 text-links fill-links ml-0.5" />
@@ -219,8 +224,9 @@ export default function Home() {
           <div className="w-full max-w-2xl bg-white/20 backdrop-blur-sm border border-white/30 rounded-3xl p-4 shadow-xl flex flex-col gap-3">
             <div className="w-full relative flex items-center bg-white rounded-full px-1.5 py-1.5 shadow-inner gap-2">
               {selectedTab !== "" && (
-                <div className="flex items-center bg-secondary/20 pl-3 pr-1 py-1 gap-2 rounded-full">
+                <div className="md:flex items-center bg-secondary/20 pl-3 pr-1 py-1 gap-2 rounded-full hidden">
                   {selectedTab}
+
                   <button
                     onClick={() => setSelectedTab("")}
                     className="p-1 rounded-full text-accent flex items-center justify-center hover:bg-secondary/40"
@@ -247,7 +253,7 @@ export default function Home() {
                 className="flex bg-links hover:bg-accent duration-500 py-2 px-4 rounded-full text-white items-center"
               >
                 <Search size={16} className="shrink-0" />
-                &nbsp;Search
+                <span className="md:flex hidden">&nbsp;Search</span>
               </button>
             </div>
 
@@ -281,51 +287,51 @@ export default function Home() {
         <SectionHeader
           title="Featured Destinations"
           subtitle="Rwanda's most extraordinary places to explore"
-          onSeeAll={() => router.push("/explore")}
+          onSeeAll={"/explore"}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinations.loading ? (
             Array.from({ length: 4 }).map((_, idx) => (
-              <div
-                key={idx}
-                onClick={() => router.push("/explore")}
-                className={`bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer relative overflow-hidden rounded-2xl cursor-pointer group ${idx === 0 ? "md:row-span-2 md:col-span-1" : ""} ${idx === 3 ? "lg:col-span-2" : ""}`}
-                style={{
-                  height: idx === 0 ? "auto" : "200px",
-                  minHeight: idx === 0 ? "400px" : "200px",
-                }}
-              />
+              <Link href={"/explore"} key={idx}>
+                <div
+                  className={`bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer relative overflow-hidden rounded-2xl cursor-pointer group ${idx === 0 ? "md:row-span-2 md:col-span-1" : ""} ${idx === 3 ? "lg:col-span-2" : ""}`}
+                  style={{
+                    height: idx === 0 ? "auto" : "200px",
+                    minHeight: idx === 0 ? "400px" : "200px",
+                  }}
+                />
+              </Link>
             ))
           ) : destinations.data.length && destinations.data.length > 0 ? (
             destinations.data.map((dest, i) => (
-              <div
-                key={dest.id}
-                onClick={() => router.push("/explore")}
-                className={`relative overflow-hidden rounded-2xl cursor-pointer group ${i === 0 ? "md:row-span-2 md:col-span-1" : ""} ${i === 3 ? "lg:col-span-2" : ""}`}
-                style={{
-                  height: i === 0 ? "auto" : "200px",
-                  minHeight: i === 0 ? "400px" : "200px",
-                }}
-              >
-                <img
-                  src={dest.image}
-                  alt={dest.name}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 absolute inset-0"
-                />
-                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
-                <div className="absolute bottom-0 left-0 right-0 p-5">
-                  <div className="inline-flex items-center gap-1 bg-links/80 backdrop-blur-sm text-white text-xs font-mono font-medium px-2 py-1 rounded-full mb-2">
-                    <MapPin className="w-3 h-3" /> {dest.places} places
+              <Link href={"/explore"} key={dest.id}>
+                <div
+                  className={`relative overflow-hidden rounded-2xl cursor-pointer group ${i === 0 ? "md:row-span-2 md:col-span-1" : ""} ${i === 3 ? "lg:col-span-2" : ""}`}
+                  style={{
+                    height: i === 0 ? "auto" : "200px",
+                    minHeight: i === 0 ? "400px" : "200px",
+                  }}
+                >
+                  <img
+                    src={dest.image}
+                    alt={dest.name}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 absolute inset-0"
+                  />
+                  <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/20 to-transparent" />
+                  <div className="absolute bottom-0 left-0 right-0 p-5">
+                    <div className="inline-flex items-center gap-1 bg-links/80 backdrop-blur-sm text-white text-xs font-mono font-medium px-2 py-1 rounded-full mb-2">
+                      <MapPin className="w-3 h-3" /> {dest.places} places
+                    </div>
+                    <h3
+                      className="text-white font-bold text-lg leading-tight"
+                      style={{ fontFamily: "'Playfair Display', serif" }}
+                    >
+                      {dest.name}
+                    </h3>
+                    <p className="text-white/80 text-sm">{dest.tagline}</p>
                   </div>
-                  <h3
-                    className="text-white font-bold text-lg leading-tight"
-                    style={{ fontFamily: "'Playfair Display', serif" }}
-                  >
-                    {dest.name}
-                  </h3>
-                  <p className="text-white/80 text-sm">{dest.tagline}</p>
                 </div>
-              </div>
+              </Link>
             ))
           ) : (
             <div className="flex flex-col items-center justify-center h-52 w-full">
@@ -342,7 +348,7 @@ export default function Home() {
         subtitle="Handpicked stays from budget to ultra-luxury"
         loading={hotels.loading}
         items={hotels.data}
-        onSeeAll={() => router.push("/explore?tab=hotels")}
+        onSeeAll={"/explore?tab=hotels"}
         tab="hotels"
       />
 
@@ -353,32 +359,30 @@ export default function Home() {
         />
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {inspirations.map((item) => (
-            <div
-              key={item.title}
-              onClick={() => router.push("/explore")}
-              className="relative overflow-hidden rounded-2xl h-64 cursor-pointer group"
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
-              />
-              <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
-              <div className="absolute top-4 left-4">
-                <span className="bg-accent text-canva text-xs font-bold px-3 py-1 rounded-full font-mono">
-                  {item.tag}
-                </span>
+            <Link href={"/explore"} key={item.title}>
+              <div className="relative overflow-hidden rounded-2xl h-64 cursor-pointer group">
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                />
+                <div className="absolute inset-0 bg-linear-to-t from-black/70 via-black/10 to-transparent" />
+                <div className="absolute top-4 left-4">
+                  <span className="bg-accent text-canva text-xs font-bold px-3 py-1 rounded-full font-mono">
+                    {item.tag}
+                  </span>
+                </div>
+                <div className="absolute bottom-0 left-0 right-0 p-5">
+                  <h3
+                    className="text-white font-bold text-lg"
+                    style={{ fontFamily: "'Playfair Display', serif" }}
+                  >
+                    {item.title}
+                  </h3>
+                  <p className="text-white/80 text-sm">{item.subtitle}</p>
+                </div>
               </div>
-              <div className="absolute bottom-0 left-0 right-0 p-5">
-                <h3
-                  className="text-white font-bold text-lg"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
-                >
-                  {item.title}
-                </h3>
-                <p className="text-white/80 text-sm">{item.subtitle}</p>
-              </div>
-            </div>
+            </Link>
           ))}
         </div>
       </section>
@@ -387,7 +391,7 @@ export default function Home() {
         title="Top Restaurants"
         subtitle="From street food to fine dining across Rwanda"
         items={restaurants.data}
-        onSeeAll={() => router.push("/explore?tab=restaurants")}
+        onSeeAll={"/explore?tab=restaurants"}
         loading={restaurants.loading}
         tab="restaurants"
       />
@@ -396,7 +400,7 @@ export default function Home() {
         title="Best Attractions"
         subtitle="National parks, lakes, mountains and cultural gems"
         items={attractions.data}
-        onSeeAll={() => router.push("/explore?tab=attractions")}
+        onSeeAll={"/explore?tab=attractions"}
         loading={attractions.loading}
         tab="attractions"
       />
@@ -405,7 +409,7 @@ export default function Home() {
         <SectionHeader
           title="Upcoming Events"
           subtitle="Festivals, sports, arts, and cultural celebrations"
-          onSeeAll={() => router.push("/events")}
+          onSeeAll={"/events"}
         />
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
           {events.loading ? (
@@ -545,18 +549,16 @@ export default function Home() {
               discover hidden gems.
             </p>
             <div className="flex gap-4 flex-wrap">
-              <button
-                onClick={() => router.push("/map")}
-                className="flex items-center gap-2 bg-links text-white px-6 py-3 rounded-xl font-semibold hover:bg-accent transition-colors shadow-lg"
-              >
-                <MapIcon className="w-5 h-5" /> Open Full Map
-              </button>
-              <button
-                onClick={() => router.push("/explore")}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-xl font-semibold transition-colors"
-              >
-                <Compass className="w-5 h-5" /> Explore Places
-              </button>
+              <Link href={"/map"}>
+                <button className="flex items-center gap-2 bg-links text-white px-6 py-3 rounded-xl font-semibold hover:bg-accent transition-colors shadow-lg">
+                  <MapIcon className="w-5 h-5" /> Open Full Map
+                </button>
+              </Link>
+              <Link href={"/explore"}>
+                <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-6 py-3 rounded-xl font-semibold transition-colors">
+                  <Compass className="w-5 h-5" /> Explore Places
+                </button>
+              </Link>
             </div>
           </div>
         </div>
@@ -664,18 +666,16 @@ export default function Home() {
               </p>
             </div>
             <div className="flex flex-col gap-3 shrink-0">
-              <button
-                onClick={() => router.push("/trips")}
-                className="flex items-center gap-2 bg-cta text-primary px-8 py-4 rounded-xl font-bold hover:bg-cta/80 transition-colors whitespace-nowrap shadow-lg"
-              >
-                <Zap className="w-5 h-5" /> Plan My Trip
-              </button>
-              <button
-                onClick={() => router.push("/explore")}
-                className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-xl font-semibold transition-colors whitespace-nowrap justify-center"
-              >
-                <Search className="w-5 h-5" /> Browse Places
-              </button>
+              <Link href={"/trips"}>
+                <button className="flex items-center gap-2 bg-cta text-primary px-8 py-4 rounded-xl font-bold hover:bg-cta/80 transition-colors whitespace-nowrap shadow-lg">
+                  <Zap className="w-5 h-5" /> Plan My Trip
+                </button>
+              </Link>
+              <Link href={"/explore"}>
+                <button className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/20 text-white px-8 py-4 rounded-xl font-semibold transition-colors whitespace-nowrap justify-center">
+                  <Search className="w-5 h-5" /> Browse Places
+                </button>
+              </Link>
             </div>
           </div>
         </div>

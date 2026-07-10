@@ -17,11 +17,14 @@ import {
   Phone,
   ChevronLeft,
   X,
+  Loader,
 } from "lucide-react";
 import { renderToString } from "react-dom/server";
 import { useEffect, useState } from "react";
 import { Pin } from "@/store/features/mapSlice";
 import L from "leaflet";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const pinColors: Record<string, string> = {
   park: "#20603D",
@@ -148,6 +151,7 @@ export function SelectedPlace({
   back,
   smallerScreen,
 }: SelectedPlaceProps) {
+  const router = useRouter();
   const [place, setPlace] = useState<{
     id: string;
     name: string;
@@ -191,14 +195,18 @@ export function SelectedPlace({
 
   if (loading) {
     return (
-      <div className="p-5">
-        <p className="text-sm text-secondary">Loading details...</p>
-      </div>
+      <p className="text-sm text-secondary/50 font-semibold h-full text-center flex items-center justify-center">
+        <Loader />
+      </p>
     );
   }
 
   if (!place) {
-    return <div className="p-5">Failed to load place.</div>;
+    return (
+      <p className="text-sm text-secondary/50 font-semibold h-full text-center">
+        No place found, Try again later!
+      </p>
+    );
   }
 
   return (
@@ -294,15 +302,11 @@ export function SelectedPlace({
           </div>
         )}
 
-        {/* Continue exploration */}
-        <button
-          className="w-full bg-canva border border-accent text-accent rounded-full py-1 font-semibold hover:bg-accent/90 hover:text-canva"
-          onClick={() => {
-            window.location.href = `/explore/${pin.type}/${pin.id}`;
-          }}
-        >
-          See more details
-        </button>
+        <Link href={`/${pin.type}/${pin.id}`}>
+          <button className="w-full bg-canva border border-accent text-accent rounded-full py-1 font-semibold hover:bg-accent/90 hover:text-canva">
+            See more details
+          </button>
+        </Link>
       </div>
     </div>
   );

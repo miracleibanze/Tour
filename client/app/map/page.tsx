@@ -1,15 +1,12 @@
 "use client";
 
 import dynamic from "next/dynamic";
+import Loading from "../loading";
 
 // Disable SSR for the map component
 const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
   ssr: false,
-  loading: () => (
-    <div className="h-full w-full flex items-center justify-center">
-      Loading Map...
-    </div>
-  ),
+  loading: () => <Loading />,
 });
 
 export default function Page() {

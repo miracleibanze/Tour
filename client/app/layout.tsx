@@ -4,6 +4,8 @@ import "./globals.css";
 import Navbar from "@/components/Navbar";
 import "leaflet/dist/leaflet.css";
 import StateProvider from "@/store/StateProvider";
+import Loading from "./loading";
+import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,6 +33,12 @@ export default function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col ">
+        <NextTopLoader
+          color="#16a34a"
+          showSpinner={true}
+          height={4}
+          zIndex={99999}
+        />
         <StateProvider>
           <MainRoot>{children}</MainRoot>
         </StateProvider>

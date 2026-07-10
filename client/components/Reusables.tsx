@@ -10,6 +10,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useTopLoader } from "nextjs-toploader";
 import { useState } from "react";
 
 export function StarRating({
@@ -67,10 +68,16 @@ export function PlaceCard({
   const [liked, setLiked] = useState(false);
   const [saved, setSaved] = useState(false);
   const router = useRouter();
+  const loader = useTopLoader();
+
+  const navigate = () => {
+    loader.start();
+    router.push(`/${tab}/${href}`);
+  };
   return (
     <div
-      onClick={() => router.push(`/${tab}/${href}`)}
-      className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer ${className ? className : ""}`}
+      onClick={navigate}
+      className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-secondary/40 hover:shadow-md transition-all duration-300 hover:-translate-y-0.5 group cursor-pointer h-full ${className ? className : ""}`}
     >
       <div className="relative overflow-hidden h-48 bg-secondary/20">
         <img
@@ -144,10 +151,10 @@ export function SectionHeader({
 }: {
   title: string;
   subtitle?: string;
-  onSeeAll?: () => void;
+  onSeeAll?: string;
 }) {
   return (
-    <div className="flex items-end justify-between mb-6">
+    <div className="flex items-end justify-between mb-6 flex-wrap gap-4">
       <div>
         <h2
           className="text-3xl font-bold text-primary"
@@ -158,12 +165,11 @@ export function SectionHeader({
         {subtitle && <p className="text-accent text-sm mt-1">{subtitle}</p>}
       </div>
       {onSeeAll && (
-        <button
-          onClick={onSeeAll}
-          className="flex items-center gap-1 text-primary text-sm font-semibold hover:gap-2 transition-all"
-        >
-          See all <ChevronRight className="w-4 h-4" />
-        </button>
+        <Link href={onSeeAll}>
+          <button className="flex items-center whitespace-nowrap gap-1 text-primary text-sm font-semibold hover:gap-2 transition-all flex-0 ml-auto">
+            See all <ChevronRight className="w-4 h-4" />
+          </button>
+        </Link>
       )}
     </div>
   );
