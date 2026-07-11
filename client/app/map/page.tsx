@@ -4,10 +4,13 @@ import dynamic from "next/dynamic";
 import Loading from "../loading";
 
 // Disable SSR for the map component
-const MapComponent = dynamic(() => import("@/components/map/MapComponent"), {
-  ssr: false,
-  loading: () => <Loading />,
-});
+const MapComponent = dynamic(
+  () => import("@/components/map/MapComponent").then((mod) => mod.default),
+  {
+    ssr: false,
+    loading: () => <Loading />,
+  },
+);
 
 export default function Page() {
   return (

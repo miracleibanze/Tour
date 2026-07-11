@@ -7,12 +7,12 @@ import { RootState } from "@/store/store";
 import { ChevronDown, ChevronUp, Loader, Menu, Search } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { fetchPins } from "@/store/features/mapSlice";
+import { pinColors } from "./MapFeatures";
 import {
   SelectedPlace,
   createCustomIcon,
   createThumbnailIcon,
-  pinColors,
-} from "./MapFeatures";
+} from "./SelectedPlace";
 import { MapFocus, UserLocation } from "./MapFocus";
 
 export default function MapPage() {
@@ -25,6 +25,7 @@ export default function MapPage() {
     lng: number;
   } | null>(null);
   const dispatch = useAppDispatch();
+  const [locationDenied, setLocationDenied] = useState(false);
 
   const layers: ExploreTab[] = [
     "all",
@@ -189,6 +190,9 @@ export default function MapPage() {
             onLocationFound={(location) => {
               setUserLocation(location);
             }}
+            onLocationDenied={() => {
+              setLocationDenied(true);
+            }}
           />
         </MapContainer>
 
@@ -212,6 +216,43 @@ export default function MapPage() {
           RWANDA
         </div>
       </div>
+
+      {locationDenied && (
+        <div className="fixed inset-0 z-2000 bg-black/50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-xl max-w-sm w-full p-6 text-center">
+            <h2 className="text-lg font-bold mb-2">Location Required</h2>
+
+            <p className="text-sm text-secondary mb-6">
+              TWIVICS uses your location to show nearby hotels, restaurants,
+              attractions, and events around you. Please allow location access
+              to use the map features.
+            </p>
+            <p className="text-sm text-secondary/40 mb-6">
+              You're required to allow this website to access your location in{" "}
+              <u>Settings</u>
+            </p>
+
+            <div className="flex gap-3">
+              <button
+                onClick={() => window.history.back()}
+                className="flex-1 rounded-xl border border-secondary/30 py-2 text-sm font-semibold"
+              >
+                Go Back
+              </button>
+
+              <button
+                onClick={() => {
+                  setLocationDenied(false);
+                  window.location.reload();
+                }}
+                className="flex-1 rounded-xl bg-primary text-white py-2 text-sm font-semibold"
+              >
+                Try Again
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div
         className={`md:hidden absolute top-12 left-0 right-0 z-1000 border-b border-secondary/20 flex flex-col ${mobileOpen ? "bottom-12" : "max-h-max"} ${selectedPin ? "bottom-15 flex-col-reverse" : ""}`}
@@ -312,7 +353,7 @@ export default function MapPage() {
           </div>
         )}
         <div
-          className={`w-full ${mobileOpen || selectedPin ? "flex-1" : "h-0"} bg-primary`}
+          className={`w-full ${mobileOpen || selectedPin ? "flex-1" : "h-0"}`}
           onClick={() => {
             setMobileOpen((v) => !v);
             setSelectedPinId(null);

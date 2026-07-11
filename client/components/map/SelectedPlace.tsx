@@ -1,19 +1,7 @@
 "use client";
 
 import {
-  TreePine,
-  Waves,
-  Building2,
   Star,
-  Navigation,
-  Utensils,
-  Coffee,
-  Mountain,
-  CalendarDays,
-  Bus,
-  Landmark,
-  LucideIcon,
-  Bookmark,
   MapPin,
   Clock,
   Phone,
@@ -27,47 +15,8 @@ import { Pin } from "@/store/features/mapSlice";
 import L from "leaflet";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { mapCategories, pinColors } from "./MapFeatures";
 
-export const pinColors: Record<string, string> = {
-  park: "#20603D",
-  lake: "#00A1DE",
-  city: "#FAD201",
-};
-
-export const mapCategories: Record<
-  ExploreTab,
-  { color: string; icon: LucideIcon }
-> = {
-  all: {
-    color: "bg-[#2563eb]",
-    icon: MapPin,
-  },
-  hotels: {
-    color: "bg-[#2563eb]",
-    icon: Building2,
-  },
-  restaurants: {
-    color: "bg-[#ef4444]",
-    icon: Utensils,
-  },
-  cafes: {
-    color: "bg-[#d97706]",
-    icon: Coffee,
-  },
-  attractions: {
-    color: "bg-[#059669]",
-    icon: Landmark,
-  },
-  events: {
-    color: "bg-[#9333ea]",
-    icon: CalendarDays,
-  },
-  transport: {
-    color: "bg-[#475569]",
-    icon: Bus,
-  },
-};
-// Helper for custom Tailwind icons in Leaflet
 export const createCustomIcon = (type: ExploreTab) => {
   const color = pinColors[type] || "#333";
   const category = mapCategories[type];
@@ -102,6 +51,7 @@ export const createCustomIcon = (type: ExploreTab) => {
       />
     </div>,
   );
+
   return L.divIcon({
     html: iconHtml,
     className: "custom-pin",
@@ -295,8 +245,8 @@ export function SelectedPlace({
         {place.workingHours && (
           <div className="flex gap-2 text-sm">
             <Clock className="w-4 h-4" />
-            {place.workingHours.map((hour) => (
-              <p className="flex items-center justify-between">
+            {place.workingHours.map((hour, idx) => (
+              <p key={idx} className="flex items-center justify-between">
                 <span>{hour.day}</span>
                 <span>{hour.hours}</span>
               </p>

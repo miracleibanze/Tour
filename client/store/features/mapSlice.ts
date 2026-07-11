@@ -62,7 +62,7 @@ interface MapState {
 
 const initialState: MapState = {
   pins: [],
-  loading: true,
+  loading: false,
 };
 
 const mapSlice = createSlice({

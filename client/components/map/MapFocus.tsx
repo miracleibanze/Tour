@@ -25,29 +25,42 @@ export function MapFocus({ position }: MapFocusProps) {
 
 interface UserLocationProps {
   onLocationFound?: (location: { lat: number; lng: number }) => void;
+  onLocationDenied?: () => void;
 }
 
-export function UserLocation({ onLocationFound }: UserLocationProps) {
+export function UserLocation({
+  onLocationFound,
+  onLocationDenied,
+}: UserLocationProps) {
   const map = useMap();
+
   const markerRef = useRef<L.Marker | null>(null);
   const circleRef = useRef<L.Circle | null>(null);
   const hasZoomedRef = useRef(false);
 
-  // Keep callback stable to avoid re-running effect
   const onLocationFoundRef = useRef(onLocationFound);
-  useEffect(() => {
-    onLocationFoundRef.current = onLocationFound;
-  }, [onLocationFound]);
+  const onLocationDeniedRef = useRef(onLocationDenied);
 
   useEffect(() => {
-    if (!navigator.geolocation) return;
+    onLocationFoundRef.current = onLocationFound;
+    onLocationDeniedRef.current = onLocationDenied;
+  }, [onLocationFound, onLocationDenied]);
+
+  useEffect(() => {
+    if (!navigator.geolocation) {
+      onLocationDeniedRef.current?.();
+      return;
+    }
 
     const userIcon = L.divIcon({
       className: "",
       html: `
         <div style="
-          width:25px; height:25px; background:#2563eb;
-          border:3px solid white; border-radius:50%;
+          width:25px;
+          height:25px;
+          background:#2563eb;
+          border:3px solid white;
+          border-radius:50%;
           box-shadow:0 0 12px rgba(0,0,0,0.4);
         "></div>
       `,
@@ -59,13 +72,16 @@ export function UserLocation({ onLocationFound }: UserLocationProps) {
       (position) => {
         const { latitude: lat, longitude: lng, accuracy } = position.coords;
 
-        onLocationFoundRef.current?.({ lat, lng });
+        onLocationFoundRef.current?.({
+          lat,
+          lng,
+        });
 
-        // Initialize or Update Marker/Circle
         if (!markerRef.current) {
-          markerRef.current = L.marker([lat, lng], { icon: userIcon }).addTo(
-            map,
-          );
+          markerRef.current = L.marker([lat, lng], {
+            icon: userIcon,
+          }).addTo(map);
+
           circleRef.current = L.circle([lat, lng], {
             radius: accuracy,
             color: "#2563eb",
@@ -73,24 +89,43 @@ export function UserLocation({ onLocationFound }: UserLocationProps) {
           }).addTo(map);
         } else {
           markerRef.current.setLatLng([lat, lng]);
+
           circleRef.current?.setLatLng([lat, lng]);
           circleRef.current?.setRadius(accuracy);
         }
 
-        // Only fly to location on first detection
         if (!hasZoomedRef.current) {
-          map.flyTo([lat, lng], 15, { duration: 1.5 });
+          map.flyTo([lat, lng], 15, {
+            duration: 1.5,
+          });
+
           hasZoomedRef.current = true;
         }
       },
-      (err) => console.error("Location error:", err.message),
-      { enableHighAccuracy: true, maximumAge: 10000, timeout: 10000 },
+
+      (error) => {
+        if (error.code === error.PERMISSION_DENIED) {
+          onLocationDeniedRef.current?.();
+        }
+
+        console.error("Location error:", error.message);
+      },
+
+      {
+        enableHighAccuracy: true,
+        maximumAge: 10000,
+        timeout: 10000,
+      },
     );
 
     return () => {
       navigator.geolocation.clearWatch(watchId);
+
       markerRef.current?.remove();
       circleRef.current?.remove();
+
+      markerRef.current = null;
+      circleRef.current = null;
     };
   }, [map]);
 
