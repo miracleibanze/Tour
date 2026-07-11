@@ -19,7 +19,20 @@ const tables = {
   transport,
 } as const;
 
-type TableName = keyof typeof tables;
+const validTabs = [
+  "hotels",
+  "restaurants",
+  "cafes",
+  "attractions",
+  "events",
+  "transport",
+] as const;
+
+type TableName = (typeof validTabs)[number];
+
+function isTableName(tab: string): tab is TableName {
+  return validTabs.includes(tab as TableName);
+}
 
 export async function GET(
   request: Request,
@@ -27,12 +40,16 @@ export async function GET(
     params,
   }: {
     params: Promise<{
-      tab: TableName;
+      tab: string;
       id: string;
     }>;
   },
 ) {
   const { tab, id } = await params;
+
+  if (!isTableName(tab)) {
+    return NextResponse.json({ error: "Invalid tab" }, { status: 400 });
+  }
 
   const table = tables[tab];
 
