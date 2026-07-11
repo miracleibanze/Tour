@@ -1,10 +1,10 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import "leaflet-routing-machine/dist/leaflet-routing-machine.css";
 import Navbar from "@/components/Navbar";
 import "leaflet/dist/leaflet.css";
 import StateProvider from "@/store/StateProvider";
-import Loading from "./loading";
 import NextTopLoader from "nextjs-toploader";
 
 const geistSans = Geist({

@@ -26,6 +26,7 @@
   --highlight: #a56c00; /* Highlight text */
   --cta: #f2b705; /* Call to Action (Buttons) */
   --links-icons: #135947; /* Links / Icons */
+  --color: #8888ff;
 }
 
 @theme {

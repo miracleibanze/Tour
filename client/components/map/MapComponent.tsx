@@ -8,12 +8,11 @@ import { ChevronDown, ChevronUp, Loader, Menu, Search } from "lucide-react";
 import { useAppDispatch } from "@/store/hooks";
 import { fetchPins } from "@/store/features/mapSlice";
 import { pinColors } from "./MapFeatures";
-import {
-  SelectedPlace,
-  createCustomIcon,
-  createThumbnailIcon,
-} from "./SelectedPlace";
+import { SelectedPlace } from "./SelectedPlace";
 import { MapFocus, UserLocation } from "./MapFocus";
+import MarkerCluster from "./MarkerCluster";
+import MapSearch from "./MapSearch";
+import RouteControl from "./RouteControl";
 
 export default function MapComponent() {
   const { pins, loading } = useSelector((state: RootState) => state.map);
@@ -84,13 +83,12 @@ export default function MapComponent() {
         {!selectedPin ? (
           <>
             <div className="p-4 border-b border-secondary/20">
-              <div className="flex items-center gap-2 bg-foreground rounded-xl px-3 py-2.5 mb-3">
-                <Search className="w-4 h-4 text-links" />
-                <input
-                  placeholder="Search on map…"
-                  className="flex-1 bg-transparent text-sm outline-none"
-                />
-              </div>
+              <MapSearch
+                pins={pins}
+                onResult={(pin) => {
+                  setSelectedPinId(pin.id);
+                }}
+              />
               <div className="flex gap-2 flex-wrap">
                 {layers.map((l: ExploreTab) => (
                   <button
@@ -167,20 +165,11 @@ export default function MapComponent() {
         >
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
-          {filteredPins.map((pin) => (
-            <Marker
-              key={pin.id}
-              position={[pin.lat, pin.lng]}
-              icon={
-                selectedPinId === pin.id
-                  ? createThumbnailIcon(pin.image)
-                  : createCustomIcon(pin.type)
-              }
-              eventHandlers={{
-                click: () => setSelectedPinId(pin.id),
-              }}
-            />
-          ))}
+          <MarkerCluster
+            pins={filteredPins}
+            selectedPinId={selectedPinId}
+            onSelect={setSelectedPinId}
+          />
 
           <MapFocus
             position={selectedPin ? [selectedPin.lat, selectedPin.lng] : null}
@@ -194,6 +183,15 @@ export default function MapComponent() {
               setLocationDenied(true);
             }}
           />
+          {userLocation && selectedPin && (
+            <RouteControl
+              from={userLocation}
+              to={{
+                lat: selectedPin.lat,
+                lng: selectedPin.lng,
+              }}
+            />
+          )}
         </MapContainer>
 
         {/* Overlays (Legend and Labels preserved) */}
