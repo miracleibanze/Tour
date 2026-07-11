@@ -8,7 +8,9 @@ const MapComponent = dynamic(
   () => import("@/components/map/MapComponent").then((mod) => mod.default),
   {
     ssr: false,
-    loading: () => <Loading />,
+    loading: () => (
+      <div className="fixed inset-0 flex items-center justify-center">sdkj</div>
+    ),
   },
 );
 
