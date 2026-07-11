@@ -2,6 +2,7 @@
 
 import dynamic from "next/dynamic";
 import Loading from "../loading";
+import ErrorBoundary from "../ErrorBoundary";
 
 // Disable SSR for the map component
 const MapComponent = dynamic(
@@ -16,8 +17,10 @@ const MapComponent = dynamic(
 
 export default function Page() {
   return (
-    <main className="h-[calc(100vh-3.5rem)] w-full">
-      <MapComponent />
+    <main className="h-[calc(100dvh-3.5rem)] w-full">
+      <ErrorBoundary>
+        <MapComponent />
+      </ErrorBoundary>
     </main>
   );
 }

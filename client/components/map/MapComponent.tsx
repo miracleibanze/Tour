@@ -15,7 +15,7 @@ import {
 } from "./SelectedPlace";
 import { MapFocus, UserLocation } from "./MapFocus";
 
-export default function MapPage() {
+export default function MapComponent() {
   const { pins, loading } = useSelector((state: RootState) => state.map);
   const [selectedPinId, setSelectedPinId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<ExploreTab>("all");
@@ -171,11 +171,12 @@ export default function MapPage() {
             <Marker
               key={pin.id}
               position={[pin.lat, pin.lng]}
-              icon={
-                selectedPinId === pin.id
-                  ? createThumbnailIcon(pin.image)
-                  : createCustomIcon(pin.type)
-              }
+              // icon={
+              //   selectedPinId === pin.id
+              //     ? createThumbnailIcon(pin.image)
+              //     : createCustomIcon(pin.type)
+              // }
+              icon={undefined}
               eventHandlers={{
                 click: () => setSelectedPinId(pin.id),
               }}
@@ -299,7 +300,7 @@ export default function MapPage() {
             </div>
 
             {mobileOpen && (
-              <div className=" p-4 space-y-3 overflow-y-scroll flex-1 max-h-[40vh] bg-canva">
+              <div className=" p-4 space-y-3 overflow-y-scroll flex-1 max-h-[calc(50dvh-3.5rem)] bg-canva">
                 {!selectedPin &&
                   filteredPins.map((pin) => {
                     const distance = userLocation
@@ -341,7 +342,7 @@ export default function MapPage() {
             )}
           </>
         ) : (
-          <div className="max-h-[50vh] overflow-y-auto mt-auto rounded-t-3xl overflow-hidden">
+          <div className="max-h-[calc(65dvh-3.5rem)] overflow-y-auto mt-auto rounded-t-3xl overflow-hidden">
             <SelectedPlace
               pin={selectedPin}
               back={() => {
