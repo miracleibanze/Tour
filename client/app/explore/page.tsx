@@ -33,6 +33,7 @@ import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { fetchAll } from "@/store/features/allSlice";
 import { fetchSearch } from "@/store/features/searchSlice";
 import { useTopLoader } from "nextjs-toploader";
+import Loading from "../loading";
 
 function ExplorePageContent() {
   const dispatch = useAppDispatch();
@@ -157,7 +158,7 @@ function ExplorePageContent() {
     params.delete("page");
 
     loader.start();
-    
+
     router.push(`${pathname}?${params.toString()}`);
     setPage(1);
   };
@@ -788,7 +789,7 @@ function ExplorePageContent() {
 
 export default function ExplorePage() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<Loading />}>
       <ExplorePageContent />
     </Suspense>
   );
