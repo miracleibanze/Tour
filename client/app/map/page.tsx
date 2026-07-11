@@ -10,7 +10,9 @@ const MapComponent = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="fixed inset-0 flex items-center justify-center">sdkj</div>
+      <div className="fixed inset-0 flex items-center justify-center">
+        trying
+      </div>
     ),
   },
 );
