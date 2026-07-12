@@ -96,12 +96,14 @@ interface SelectedPlaceProps {
   pin: Pin;
   back: () => void;
   smallerScreen?: boolean;
+  fold?: () => void;
 }
 
 export function SelectedPlace({
   pin,
   back,
   smallerScreen,
+  fold,
 }: SelectedPlaceProps) {
   const router = useRouter();
   const [place, setPlace] = useState<{
@@ -147,9 +149,11 @@ export function SelectedPlace({
 
   if (loading) {
     return (
-      <p className="text-sm text-secondary/50 font-semibold h-full text-center flex items-center justify-center">
-        <Loader />
-      </p>
+      <div className="w-full bg-white h-full overflow-y-auto border-r border-secondary/20 relative">
+        <div className="w-full bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer h-48" />
+
+        <div className="h-54" />
+      </div>
     );
   }
 
@@ -182,6 +186,12 @@ export function SelectedPlace({
         alt={place.name}
         className="w-full h-48 object-cover"
       />
+      <button
+        onClick={fold}
+        className="absolute bg-accent border border-accent text-canva rounded-full py-1 px-3 font-semibold hover:bg-accent/90 hover:text-canva translate-y-[-120%] mx-2"
+      >
+        Direction
+      </button>
 
       <div className="p-4 space-y-4">
         {/* Title */}

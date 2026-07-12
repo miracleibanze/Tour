@@ -292,26 +292,26 @@ export default function Home() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {destinations.loading ? (
             Array.from({ length: 4 }).map((_, idx) => (
-              <Link href={"/explore"} key={idx}>
-                <div
-                  className={`bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer relative overflow-hidden rounded-2xl cursor-pointer group ${idx === 0 ? "md:row-span-2 md:col-span-1" : ""} ${idx === 3 ? "lg:col-span-2" : ""}`}
-                  style={{
-                    height: idx === 0 ? "auto" : "200px",
-                    minHeight: idx === 0 ? "400px" : "200px",
-                  }}
-                />
-              </Link>
+              <div
+                className={`bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer relative overflow-hidden rounded-2xl cursor-pointer group ${idx === 0 ? "md:row-span-2 md:col-span-1" : ""} ${idx === 3 ? "lg:col-span-2" : ""}`}
+                style={{
+                  height: idx === 0 ? "auto" : "200px",
+                  minHeight: idx === 0 ? "400px" : "200px",
+                }}
+              />
             ))
           ) : destinations.data.length && destinations.data.length > 0 ? (
             destinations.data.map((dest, i) => (
-              <Link href={"/explore"} key={dest.id}>
-                <div
-                  className={`relative overflow-hidden rounded-2xl cursor-pointer group ${i === 0 ? "md:row-span-2 md:col-span-1" : ""} ${i === 3 ? "lg:col-span-2" : ""}`}
-                  style={{
-                    height: i === 0 ? "auto" : "200px",
-                    minHeight: i === 0 ? "400px" : "200px",
-                  }}
-                >
+              <Link
+                href={"/explore"}
+                key={dest.id}
+                className={`relative overflow-hidden rounded-2xl cursor-pointer group ${i === 0 ? "md:row-span-2 md:col-span-1" : ""} ${i === 3 ? "lg:col-span-2" : ""}`}
+                style={{
+                  height: i === 0 ? "auto" : "200px",
+                  minHeight: i === 0 ? "400px" : "200px",
+                }}
+              >
+                <div>
                   <img
                     src={dest.image}
                     alt={dest.name}

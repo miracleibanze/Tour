@@ -253,7 +253,7 @@ export default function MapComponent() {
       )}
 
       <div
-        className={`md:hidden absolute top-12 left-0 right-0 z-1000 border-b border-secondary/20 flex flex-col ${mobileOpen ? "bottom-12" : "max-h-max"} ${selectedPin ? "bottom-15 flex-col-reverse" : ""}`}
+        className={`md:hidden absolute top-12 left-0 right-0 z-1000 border-b border-secondary/20 flex flex-col $ ${selectedPin ? "bottom-15 flex-col-reverse" : ""} ${mobileOpen ? "bottom-12" : "max-h-max"}`}
       >
         {!selectedPin ? (
           <>
@@ -313,8 +313,7 @@ export default function MapComponent() {
                       <div
                         key={pin.id}
                         onClick={() => setSelectedPinId(pin.id)}
-                        className=" h-14 rounded-xl border border-secondary/20 flex items-center gap-3 overflow-hidden cursor-pointer hover:bg-foreground
-              "
+                        className=" h-14 rounded-xl border border-secondary/20 flex items-center gap-3 overflow-hidden cursor-pointer hover:bg-foreground"
                       >
                         <img
                           src={pin.image}
@@ -340,28 +339,37 @@ export default function MapComponent() {
           </>
         ) : (
           <div className="max-h-[calc(65dvh-3.5rem)] overflow-y-auto mt-auto rounded-t-3xl overflow-hidden">
-            <SelectedPlace
-              pin={selectedPin}
-              back={() => {
-                setSelectedPinId(null);
-                setMobileOpen(false);
-              }}
-              smallerScreen={true}
-            />
+            {mobileOpen ? (
+              <SelectedPlace
+                pin={selectedPin}
+                back={() => {
+                  setSelectedPinId(null);
+                  setMobileOpen(false);
+                }}
+                fold={() => setMobileOpen(false)}
+                smallerScreen={true}
+              />
+            ) : (
+              <div className="flex">h</div>
+            )}
           </div>
         )}
         <div
-          className={`w-full ${mobileOpen || selectedPin ? "flex-1" : "h-0"}`}
+          className={`w-full ${mobileOpen || selectedPin ? "flex-1" : ""} ${mobileOpen ? "h-12 " : selectedPinId !== null && "fixed bottom-16 rotate-180"}`}
           onClick={() => {
-            setMobileOpen((v) => !v);
-            setSelectedPinId(null);
+            if (mobileOpen === false && selectedPinId !== null)
+              setMobileOpen(true);
+            else {
+              setMobileOpen((v) => !v);
+              setSelectedPinId(null);
+            }
           }}
         >
-          {!selectedPin && (
-            <div className="w-24 border border-secondary/50 border-t-0 mx-auto bg-canva flex items-center justify-center rounded-b-2xl">
-              {mobileOpen ? <ChevronUp /> : <ChevronDown />}
-            </div>
-          )}
+          <div
+            className={`w-24 border border-secondary/50 border-t-0 mx-auto bg-canva flex items-center justify-center rounded-b-2xl ${mobileOpen && "max-md:hidden"}`}
+          >
+            {mobileOpen ? <ChevronUp /> : <ChevronDown />}
+          </div>
         </div>
       </div>
     </div>

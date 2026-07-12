@@ -84,7 +84,7 @@ const Navbar = () => {
                 <span
                   className={`${scrolled || pathname !== "/" ? "text-accent" : "text-surface"} text-xs font-medium`}
                 >
-                  Hospitality Platform
+                  Rwanda's Tourism Intelligence & Discovery Platform
                 </span>
               </div>
             </div>

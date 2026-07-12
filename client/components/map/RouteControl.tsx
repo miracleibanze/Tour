@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useMap } from "react-leaflet";
 import L from "leaflet";
 
@@ -9,7 +9,6 @@ interface Props {
     lat: number;
     lng: number;
   };
-
   to: {
     lat: number;
     lng: number;
@@ -18,38 +17,39 @@ interface Props {
 
 export default function RouteControl({ from, to }: Props) {
   const map = useMap();
+  const routingControl = useRef<any>(null);
 
   useEffect(() => {
     if (!from || !to) return;
 
-    let routingControl: any;
-
     async function createRoute() {
       await import("leaflet-routing-machine");
 
-      routingControl = (L as any).Routing.control({
+      if (routingControl.current) {
+        map.removeControl(routingControl.current);
+        routingControl.current = null;
+      }
+
+      routingControl.current = (L as any).Routing.control({
         waypoints: [L.latLng(from.lat, from.lng), L.latLng(to.lat, to.lng)],
+
         routeWhileDragging: false,
         addWaypoints: false,
         draggableWaypoints: false,
         show: false,
+
         lineOptions: {
           styles: [
             {
-              color: "#000000",
-              weight: 8,
-              opacity: 0.8,
+              color: "#0030ea",
+              weight: 5,
+              opacity: 1,
             },
             {
               color: "#8888ff",
               weight: 5,
               opacity: 1,
-            },
-            {
-              color: "#0030ea",
-              weight: 5,
-              opacity: 1,
-              dashArray: "1, 20",
+              dashArray: "1,20",
             },
           ],
         },
@@ -59,11 +59,12 @@ export default function RouteControl({ from, to }: Props) {
     createRoute();
 
     return () => {
-      if (routingControl) {
-        map.removeControl(routingControl);
+      if (routingControl.current) {
+        map.removeControl(routingControl.current);
+        routingControl.current = null;
       }
     };
-  }, [from, to, map]);
+  }, [from.lat, from.lng, to.lat, to.lng, map]);
 
   return null;
 }
