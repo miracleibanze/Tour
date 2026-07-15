@@ -55,14 +55,12 @@ export default function Home() {
   const [query, setQuery] = useState("");
   const [selectedTab, setSelectedTab] = useState("");
 
-  const {
-    destinations,
-    hotels,
-    restaurants,
-    attractions,
-    events,
-    testimonials,
-  } = useAppSelector((state) => state);
+  const destinations = useAppSelector((state) => state.destinations);
+  const hotels = useAppSelector((state) => state.hotels);
+  const restaurants = useAppSelector((state) => state.restaurants);
+  const attractions = useAppSelector((state) => state.attractions);
+  const events = useAppSelector((state) => state.events);
+  const testimonials = useAppSelector((state) => state.testimonials);
 
   useEffect(() => {
     dispatch(
@@ -293,6 +291,7 @@ export default function Home() {
           {destinations.loading ? (
             Array.from({ length: 4 }).map((_, idx) => (
               <div
+                key={idx}
                 className={`bg-linear-to-r from-secondary/30 via-secondary/10 to-secondary/30 shimmer relative overflow-hidden rounded-2xl cursor-pointer group ${idx === 0 ? "md:row-span-2 md:col-span-1" : ""} ${idx === 3 ? "lg:col-span-2" : ""}`}
                 style={{
                   height: idx === 0 ? "auto" : "200px",
